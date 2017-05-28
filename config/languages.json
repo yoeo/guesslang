@@ -1,0 +1,22 @@
+{
+  "C": ["c"],
+  "C++": ["cpp", "cc"],
+  "C#": ["cs"],
+  "CSS": ["css"],
+  "Erlang": ["erl", "hrl"],
+  "Go": ["go"],
+  "HTML": ["html"],
+  "Java": ["java"],
+  "Javascript": ["js", "es6"],
+  "Markdown": ["md"],
+  "Objective-C": ["m"],
+  "PHP": ["php"],
+  "Perl": ["pl", "pm"],
+  "Python": ["py"],
+  "Ruby": ["rb"],
+  "Rust": ["rs"],
+  "Scala": ["scala"],
+  "Shell": ["sh"],
+  "SQL": ["sql"],
+  "Swift": ["swift"]
+}

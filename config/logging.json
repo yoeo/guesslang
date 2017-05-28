@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "formatters": {
+    "color": {
+      "class": "guesslang.config.ColorLogFormatter",
+      "format": "{asctime} {name} {levelname} {message}",
+      "datefmt": "%H:%M:%S",
+      "style": "{"
+    }
+  },
+  "handlers": {
+    "console": {
+      "class": "logging.StreamHandler",
+      "level": "DEBUG",
+      "formatter": "color",
+      "stream": "ext://sys.stdout"
+    }
+  },
+  "loggers": {
+    "guesslang": {
+      "level": "DEBUG",
+      "handlers": ["console"],
+      "propagate": 0
+    },
+    "__main__": {
+      "level": "DEBUG",
+      "handlers": ["console"],
+      "propagate": 0
+    }
+  },
+  "disable_existing_loggers": false
+}
