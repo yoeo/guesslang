@@ -25,7 +25,12 @@ import ast
 from datetime import datetime
 from pathlib import Path
 import re
+import sys
 
+
+# Add Guesslang path for autodoc
+
+sys.path.insert(0, str(Path('..').absolute()))
 
 # -- General configuration ------------------------------------------------
 

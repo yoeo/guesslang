@@ -16,8 +16,8 @@ into features vector and used to fit a
 `Tensorflow <https://www.tensorflow.org/>`_ machine learning classifier.
 
 The features vector is computed using
-the `Bag Of Words method <https://en.wikipedia.org/wiki/Bag-of-words_model>`_
-along with the `Hashing Trick <https://en.wikipedia.org/wiki/Feature_hashing>`_
+the `Bag of words method <https://en.wikipedia.org/wiki/Bag-of-words_model>`_
+along with the `Hashing trick <https://en.wikipedia.org/wiki/Feature_hashing>`_
 
 For example,
 

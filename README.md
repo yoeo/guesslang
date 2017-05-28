@@ -39,10 +39,10 @@ With a guessing **accuracy higher than 90%**.
 ## Documentation
 
 * Guesslang documentation is available at
-  https://readthedocs.org/projects/guesslang/
+  https://guesslang.readthedocs.io/en/latest/
 
 * Guesslang language detection explained here
-  https://readthedocs.org/projects/guesslang/how.html
+  https://guesslang.readthedocs.io/en/latest/how.html
 
 * Guesslang is based on [Tensorflow](https://github.com/tensorflow/tensorflow)
   machine learning framework
@@ -124,26 +124,18 @@ if __name__ == "__main__":
 [Chameledit](https://github.com/yoeo/chameledit) is a simple web-editor
 that automatically highlights your code.
 
-<div>
-  <video controls>
-    <source src="docs/_static/videos/chameledit.webm" type="video/webm">
-    <source src="docs/_static/videos/chameledit.mp4" type="video/mp4">
-    Video not supported by your browser :-( __
-  </video>
-</div>
+<a href="http://guesslang.readthedocs.io/en/latest/_static/videos/chameledit.webm">
+  <img src="docs/_static/images/chameledit.png"  alt="Pasta chameledit_" />
+</a>
 
 ##### Pasta
 
 [Pasta](https://github.com/yoeo/pasta) is a [Slack](https://slack.com) bot
 that pretty pastes source code.
 
-<div>
-  <video controls width="900">
-    <source src="docs/_static/videos/pasta.webm" type="video/webm">
-    <source src="docs/_static/videos/pasta.mp4" type="video/mp4">
-    Video not supported by your browser :-( __
-  </video>
-</div>
+<a href="http://guesslang.readthedocs.io/en/latest/_static/videos/pasta.webm">
+  <img src="docs/_static/images/pasta.png" alt="Pasta preview_"/>
+</a>
 
 #### GG
 
@@ -152,7 +144,7 @@ that pretty pastes source code.
 
 ## License and credits
 
-* [Guesslang documentation](https://readthedocs.org/projects/guesslang/)
+* [Guesslang documentation](https://guesslang.readthedocs.io/en/latest/)
 
 * Guesslang icon created with
   [AndroidAssetStudio](https://github.com/romannurik/AndroidAssetStudio)

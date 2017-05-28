@@ -4,7 +4,7 @@ Usage
 .. toctree::
    :maxdepth: 2
 
-This is Guesslang Command Line Interface user guide.
+This is Guesslang command line interface user guide.
 
 To list all the available options, please run:
 
