@@ -1,5 +1,7 @@
 # Guesslang
 
+![Chameledit](docs/_static/images/guesslang-small.png)
+
 Guesslang detects the programming language of a given source code:
 
 ``` python
