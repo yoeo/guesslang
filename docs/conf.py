@@ -29,8 +29,7 @@ import sys
 
 
 # Add Guesslang path for autodoc
-
-sys.path.insert(0, str(Path('..').absolute()))
+sys.path.insert(0, str(Path(__file__).parent.parent.absolute()))
 
 # -- General configuration ------------------------------------------------
 

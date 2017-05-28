@@ -2,6 +2,8 @@
 
 ![Chameledit](docs/_static/images/guesslang-small.png)
 
+[![Documentation Status](https://readthedocs.org/projects/guesslang/badge/?version=latest)](http://guesslang.readthedocs.io/en/latest/?badge=latest)
+
 Guesslang detects the programming language of a given source code:
 
 ``` python
