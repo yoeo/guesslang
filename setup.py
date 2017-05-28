@@ -24,7 +24,10 @@ setup(
     license="MIT",
     install_requires=Path('requirements.txt').read_text(),
     packages=find_packages(exclude=['tests', 'tools']),
-    data_files=[('config', Path('config').glob('**/*'))],
+    data_files=[
+        ('config', [
+            str(filename) for filename in Path('config').glob('**/*')
+            if filename.is_file()])],
     setup_requires=['pytest-runner'],
     tests_require=Path('requirements-test.txt').read_text(),
     platforms='any',
