@@ -5,7 +5,8 @@ import logging.config
 from pathlib import Path
 import platform
 
-from pkg_resources import Requirement, resource_string, resource_filename
+from pkg_resources import (
+    Requirement, resource_string, resource_filename, DistributionNotFound)
 
 import tensorflow as tf
 
@@ -13,6 +14,7 @@ import tensorflow as tf
 LOGGER = logging.getLogger(__name__)
 
 _PACKAGE = Requirement.parse('guesslang')
+_CONFIG_PATH = Path(__file__).parent.parent.joinpath('config')
 
 
 class ColorLogFormatter(logging.Formatter):
@@ -68,7 +70,12 @@ def config_dict(name):
     ``name`` -- the JSON file name.
 
     """
-    content = resource_string(_PACKAGE, 'config/{}'.format(name)).decode()
+    try:
+        content = resource_string(_PACKAGE, 'config/{}'.format(name)).decode()
+    except DistributionNotFound:
+        LOGGER.warning("Guesslang is not installed")
+        content = _CONFIG_PATH.joinpath(name).read_text()
+
     return json.loads(content)
 
 
@@ -81,7 +88,11 @@ def model_info(model_dir=None):
 
     """
     if model_dir is None:
-        model_dir = resource_filename(_PACKAGE, 'config/model')
+        try:
+            model_dir = resource_filename(_PACKAGE, 'config/model')
+        except DistributionNotFound:
+            LOGGER.warning("Guesslang is not installed")
+            model_dir = str(_CONFIG_PATH.joinpath('model').absolute())
         is_default_model = True
     else:
         is_default_model = False

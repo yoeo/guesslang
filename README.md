@@ -54,8 +54,16 @@ With a guessing **accuracy higher than 90%**.
 
 * Python 3.5+ is required
 
+* Install the latest stable version:
+
 ```bash
-python3 setup.py install
+pip install guesslang
+```
+
+* Or install Guesslang from source code:
+
+```bash
+pip install -e .
 ```
 
 ## Usage

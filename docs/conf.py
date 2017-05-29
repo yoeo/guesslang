@@ -30,6 +30,7 @@ import sys
 
 # Add Guesslang path for autodoc
 sys.path.insert(0, str(Path(__file__).parent.parent.absolute()))
+autodoc_mock_imports = ['tensorflow', 'numpy']
 
 # -- General configuration ------------------------------------------------
 

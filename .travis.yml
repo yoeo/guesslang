@@ -4,5 +4,5 @@ python:
   - "3.6"
   - "nightly"
 install:
-  - python setup.py install
+  - pip install -e .
 script: python setup.py test
