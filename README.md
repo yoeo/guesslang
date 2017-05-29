@@ -1,31 +1,22 @@
-# Guesslang
+# Guesslang [![Build Status](https://travis-ci.org/yoeo/guesslang.svg?branch=master)](https://travis-ci.org/yoeo/guesslang) [![Documentation Status](https://readthedocs.org/projects/guesslang/badge/?version=latest)](http://guesslang.readthedocs.io/en/latest/?badge=latest)
+
 
 ![Chameledit](docs/_static/images/guesslang-small.png)
 
-[![Build Status](https://travis-ci.org/yoeo/guesslang.svg?branch=master)](https://travis-ci.org/yoeo/guesslang)
-[![Documentation Status](https://readthedocs.org/projects/guesslang/badge/?version=latest)](http://guesslang.readthedocs.io/en/latest/?badge=latest)
-
 Guesslang detects the programming language of a given source code:
 
-``` python
+```bash
+echo '
+package main
+import "fmt"
 
-from guesslang import Guess
+func main() {
+    fmt.Println("My mascot is a gopher and Google loves me. Who am I?")
+}
 
+' | guesslang
 
-name = Guess().language_name("""
-    % Quick sort
-
-  	-module (recursion).
-  	-export ([qsort/1]).
-
-  	qsort([]) -> [];
-  	qsort([Pivot|T]) ->
-  	       qsort([X || X <- T, X < Pivot])
-  	       ++ [Pivot] ++
-  	       qsort([X || X <- T, X >= Pivot]).
-""")
-
-print(name)  # >>> Erlang
+# Output: The source code is written in Go
 ```
 
 Guesslang supports `20 programming languages`:
@@ -38,6 +29,26 @@ Guesslang supports `20 programming languages`:
 | Rust        | SQL         | Scala       | Shell       | Swift       |
 
 With a guessing **accuracy higher than 90%**.
+
+## Apps powered by Guesslang
+
+#### Chameledit
+
+[Chameledit](https://github.com/yoeo/chameledit) is a simple web-editor
+that automatically highlights your code.
+
+![](docs/_static/images/chameledit.gif)
+
+##### Pasta
+
+[Pasta](https://github.com/yoeo/pasta) is a [Slack](https://slack.com) bot
+that pretty pastes source code.
+
+[Watch the demo here](https://github.com/yoeo/pasta)
+
+#### GG
+
+[GG](https://github.com/yoeo/gg) is a silly guessing game.
 
 ## Documentation
 
@@ -60,13 +71,13 @@ With a guessing **accuracy higher than 90%**.
 pip install guesslang
 ```
 
-* Or install Guesslang from source code:
+* or install Guesslang from source code:
 
 ```bash
 pip install .
 ```
 
-## Usage
+## Guesslang command line
 
 * Show all available options
 
@@ -128,30 +139,31 @@ if __name__ == "__main__":
 # >>> The source code is written in Python or C
 ```
 
-## Apps powered by Guesslang
+## Guesslang Python package
 
-#### Chameledit
+* Guesslang can be used as a Python package.
+  [Package documentation available here](https://guesslang.readthedocs.io/en/latest/guesslang.html)
 
-[Chameledit](https://github.com/yoeo/chameledit) is a simple web-editor
-that automatically highlights your code.
+``` python
 
-<a href="http://guesslang.readthedocs.io/en/latest/_static/videos/chameledit.webm">
-  <img src="docs/_static/images/chameledit.png"  alt="Pasta chameledit_" />
-</a>
+from guesslang import Guess
 
-##### Pasta
 
-[Pasta](https://github.com/yoeo/pasta) is a [Slack](https://slack.com) bot
-that pretty pastes source code.
+name = Guess().language_name("""
+    % Quick sort
 
-<a href="http://guesslang.readthedocs.io/en/latest/_static/videos/pasta.webm">
-  <img src="docs/_static/images/pasta.png" alt="Pasta preview_"/>
-</a>
+    -module (recursion).
+    -export ([qsort/1]).
 
-#### GG
+    qsort([]) -> [];
+    qsort([Pivot|T]) ->
+          qsort([X || X <- T, X < Pivot])
+          ++ [Pivot] ++
+          qsort([X || X <- T, X >= Pivot]).
+""")
 
-[GG](https://github.com/yoeo/gg) is a silly guessing game.
-
+print(name)  # >>> Erlang
+```
 
 ## License and credits
 
