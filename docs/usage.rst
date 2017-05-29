@@ -157,7 +157,7 @@ located at ``config/languages.json``.
   .. code-block:: shell
     :linenos:
 
-    pip install -r requirements-dev.txt
+    pip3 install -r requirements-dev.txt
 
 Github repositories downloader
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

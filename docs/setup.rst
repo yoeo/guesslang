@@ -28,7 +28,7 @@ You can install Guesslang on your system our virtualenv using this command:
 .. code-block:: shell
     :linenos:
 
-    pip install guesslang
+    pip3 install guesslang
 
 * Or from source code
 
@@ -38,11 +38,11 @@ then type the following command:
 .. code-block:: shell
     :linenos:
 
-    pip install .
+    pip3 install .
 
 * Build documentation
 
-To build this documentation you can install Sphinx ``pip install sphinx``
+To build this documentation you can install Sphinx ``pip3 install sphinx``
 then run:
 
 .. code-block:: shell

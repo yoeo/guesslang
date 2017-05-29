@@ -68,13 +68,13 @@ that pretty pastes source code.
 * Install the latest stable version:
 
 ```bash
-pip install guesslang
+pip3 install guesslang
 ```
 
 * or install Guesslang from source code:
 
 ```bash
-pip install .
+pip3 install .
 ```
 
 ## Guesslang command line
