@@ -140,7 +140,7 @@ by setting the ``--model`` option:
 
   guesslang --model /path/to/my-model -i /path/to/file
 
-Guesslang Tools
+Guesslang tools
 ---------------
 
 Guesslang is distributed with a set of tools that will allow you to rebuild
@@ -149,6 +149,15 @@ new programming languages.
 
 You can add / remove languages by editing the supported languages list
 located at ``config/languages.json``.
+
+.. warning::
+
+  Additional dependencies are required to run Guesslang tools:
+
+  .. code-block:: shell
+    :linenos:
+
+    pip install -r requirements-dev.txt
 
 Github repositories downloader
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

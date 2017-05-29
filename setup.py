@@ -14,13 +14,27 @@ def version(base_module):
     return ast.literal_eval(repr_value)
 
 
+def long_description(filename, end_tag, doc_url):
+    lines = []
+    for line in Path('docs/index.rst').read_text().splitlines():
+        if end_tag in line:
+            break
+
+        lines.append(line)
+
+    lines.append("Full documentation at {}".format(doc_url))
+    return '\n'.join(lines)
+
+
 setup(
     name="guesslang",
     author="Y. SOMDA",
     version=version('guesslang'),
     url="https://github.com/yoeo/guesslang",
     description="Guess a source code programming language",
-    long_description=Path('README.md').read_text(),
+    long_description=long_description(
+        'docs/index.rst', 'example-apps',
+        'https://guesslang.readthedocs.io/en/latest/'),
     license="MIT",
     install_requires=Path('requirements.txt').read_text(),
     packages=find_packages(exclude=['tests', 'tools']),
@@ -29,7 +43,7 @@ setup(
             str(filename) for filename in Path('config').glob('**/*')
             if filename.is_file()])],
     setup_requires=['pytest-runner'],
-    tests_require=Path('requirements-test.txt').read_text(),
+    tests_require=Path('requirements-dev.txt').read_text(),
     platforms='any',
     zip_safe=True,
     classifiers=[

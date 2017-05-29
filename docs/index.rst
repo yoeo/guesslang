@@ -41,6 +41,8 @@ The current ``guessing accuracy is higher than 90%``, see :doc:`how`
 You can contribute to Guesslang on Github
 `<https://github.com/yoeo/guesslang>`_.
 
+.. _example-apps:
+
 Apps powered by Guesslang
 -------------------------
 
