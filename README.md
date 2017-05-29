@@ -63,7 +63,7 @@ pip install guesslang
 * Or install Guesslang from source code:
 
 ```bash
-pip install -e .
+pip install .
 ```
 
 ## Usage

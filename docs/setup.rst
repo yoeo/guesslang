@@ -38,7 +38,7 @@ then type the following command:
 .. code-block:: shell
     :linenos:
 
-    python3 setup.py install
+    pip install .
 
 * Build documentation
 

@@ -1,8 +1,9 @@
+dist: trusty
 language: python
 python:
   - "3.5"
   - "3.6"
   - "nightly"
 install:
-  - pip install -e .
+  - pip install .
 script: python setup.py test
