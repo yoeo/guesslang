@@ -4,7 +4,6 @@ Guesslang documentation
 Guesslang detects the programming language of a given source code:
 
 .. code-block:: python
-  :linenos:
 
   from guesslang import Guess
 
@@ -36,12 +35,14 @@ Guesslang supports ``20 programming languages``:
 | Rust        | SQL         | Scala       | Shell       | Swift       |
 +-------------+-------------+-------------+-------------+-------------+
 
-The current ``guessing accuracy is higher than 90%``, see :doc:`how`
+The current ``guessing accuracy is higher than 90%``.
 
 You can contribute to Guesslang on Github
 `<https://github.com/yoeo/guesslang>`_.
 
-.. _example-apps:
+.. _end-description:
+
+For implementation details, please check :doc:`how`
 
 Apps powered by Guesslang
 -------------------------

@@ -31,9 +31,9 @@ setup(
     author="Y. SOMDA",
     version=version('guesslang'),
     url="https://github.com/yoeo/guesslang",
-    description="Guess a source code programming language",
+    description="Detect the programming language of a source code",
     long_description=long_description(
-        'docs/index.rst', 'example-apps',
+        'docs/index.rst', 'end-description',
         'https://guesslang.readthedocs.io/en/latest/'),
     license="MIT",
     install_requires=Path('requirements.txt').read_text(),
