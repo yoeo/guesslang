@@ -1,4 +1,18 @@
 #!/usr/bin/env python3
+"""
+Setup Guesslang
+
+* Install with pip (recommended):
+    pip install .
+
+* Install with setuptools:
+    pip install -r requirements.txt
+    python setup.py install
+
+* Run tests:
+    python setup.py pytest
+
+"""
 
 import ast
 from pathlib import Path
@@ -27,39 +41,46 @@ def long_description(filename, end_tag, doc_url):
 
 
 setup(
+    # Package info
     name="guesslang",
     author="Y. SOMDA",
-    version=version('guesslang'),
     url="https://github.com/yoeo/guesslang",
     description="Detect the programming language of a source code",
     long_description=long_description(
         'docs/index.rst', 'end-description',
-        'https://guesslang.readthedocs.io/en/latest/'),
+        "https://guesslang.readthedocs.io/en/latest/"
+    ),
     license="MIT",
-    install_requires=Path('requirements.txt').read_text(),
-    packages=find_packages(exclude=['tests', 'tools']),
-    data_files=[
-        ('config', [
-            str(filename) for filename in Path('config').glob('**/*')
-            if filename.is_file()])],
-    setup_requires=['pytest-runner'],
-    tests_require=Path('requirements-dev.txt').read_text(),
-    platforms='any',
-    zip_safe=True,
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Topic :: Scientific/Engineering',
-        'Topic :: Scientific/Engineering :: Artificial Intelligence',
-        'Topic :: Software Development :: Libraries',
-        'Topic :: Software Development :: Libraries :: Python Modules',
+        "Development Status :: 2 - Pre-Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Libraries :: Python Modules",
     ],
+    # Install setup
+    version=version('guesslang'),
+    platforms='any',
+    packages=find_packages(exclude=['tests', 'tools']),
+    install_requires=Path('requirements.txt').read_text(),
+    zip_safe=True,
+    include_package_data=True,
+    package_data={
+        '': ['requirements*.txt'],
+        'docs': ['docs/index.rst'],
+        'guesslang/data': ['guesslang/data/*'],
+        'guesslang/data/model': ['guesslang/data/model/*']
+    },
     entry_points={
         'console_scripts': ['guesslang = guesslang.__main__:main']
     },
+    # Test setup
+    tests_require=Path('requirements-dev.txt').read_text(),
+    setup_requires=['pytest-runner']
 )
