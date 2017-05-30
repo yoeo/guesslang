@@ -1,0 +1,4 @@
+include docs/index.rst
+include guesslang/data/*
+include guesslang/data/model/*
+include requirements*.txt

@@ -71,12 +71,6 @@ setup(
     install_requires=Path('requirements.txt').read_text(),
     zip_safe=True,
     include_package_data=True,
-    package_data={
-        '': ['requirements*.txt'],
-        'docs': ['docs/index.rst'],
-        'guesslang/data': ['guesslang/data/*'],
-        'guesslang/data/model': ['guesslang/data/model/*']
-    },
     entry_points={
         'console_scripts': ['guesslang = guesslang.__main__:main']
     },
