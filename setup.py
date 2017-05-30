@@ -3,7 +3,7 @@
 Setup Guesslang
 
 * Install with pip (recommended):
-    pip install .
+    pip3 install .
 
 * Install with setuptools:
     pip install -r requirements.txt
