@@ -56,7 +56,7 @@ that automatically highlights your code.
 .. raw:: html
 
   <div>
-    <video controls>
+    <video controls width="100%">
       <source src="_static/videos/chameledit.webm" type="video/webm">
       <source src="_static/videos/chameledit.mp4" type="video/mp4">
       Video not supported by your browser :-(
@@ -72,7 +72,7 @@ that pretty pastes source code.
 .. raw:: html
 
   <div>
-    <video controls width="900">
+    <video controls width="100%">
       <source src="_static/videos/pasta.webm" type="video/webm">
       <source src="_static/videos/pasta.mp4" type="video/mp4">
       Video not supported by your browser :-(
