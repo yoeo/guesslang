@@ -1,2 +1,2 @@
-pytest>=3.0,<3.1
+pytest
 requests>=2.13,<2.14
