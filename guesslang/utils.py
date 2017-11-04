@@ -25,16 +25,14 @@ class GuesslangError(Exception):
 
 
 def search_files(source, extensions):
-    """Returns the names of the files with the right extensions
+    """Name of the files with the right extensions
     found in source directory and its subdirectories.
 
-    A `GuesslangError` is raised when there is not enough files
-    in the directory.
-
-    ``source`` -- directory name
-
-    ``extensions`` -- list of file extensions
-
+    :raise GuesslangError: when there is not enough files in the directory
+    :param str source: directory name
+    :param str extensions: list of file extensions
+    :return: filenames
+    :rtype: list
     """
     files = [
         path for path in Path(source).glob('**/*')
@@ -53,12 +51,12 @@ def search_files(source, extensions):
 
 
 def extract_from_files(files, languages):
-    """Returns an array with the features extracted from the given files.
+    """Extract arrays of features from the given files.
 
-    ``files`` -- list of filenames
-
-    ``languages`` -- dict of language names => associated files extensions list
-
+    :param list files: list of filenames
+    :param dict languages: language name => associated file extension list
+    :return: features
+    :rtype: tuple
     """
     enumerator = enumerate(sorted(languages.items()))
     rank_map = {ext: rank for rank, (_, exts) in enumerator for ext in exts}
@@ -100,11 +98,13 @@ def _to_arrays(features):
 
 
 def safe_read_file(file_path):
-    """Returns the text file content, several text encodings are tried
-    until the file content is correctly decoded.
+    """Read the text file, several text encodings are tried until
+    the file content is correctly decoded.
 
-    ``file_path`` -- `pathlib.Path` object, path to the file to read
-
+    :raise GuesslangError: when the file encoding is not supported
+    :param pathlib.Path file_path: path to the file to read
+    :return: text file content
+    :rtype: str
     """
     for encoding in _FILE_ENCODINGS:
         try:

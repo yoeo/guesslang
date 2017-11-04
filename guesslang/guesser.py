@@ -30,14 +30,12 @@ _REPORT_FILENAME = 'report-{}.json'
 
 
 class Guess:
-    """Guess the programming language of a source code."""
+    """Guess the programming language of a source code.
+
+    :param str model_dir: Guesslang machine learning model directory.
+    """
 
     def __init__(self, model_dir=None):
-        """Programming language guesser.
-
-        ``model_dir`` -- Guesslang machine learning model directory.
-
-        """
         model_data = model_info(model_dir)
 
         #: `tensorflow` model directory
@@ -63,10 +61,11 @@ class Guess:
             model_dir=self.model_dir)
 
     def language_name(self, text):
-        """Returns the predicted programming language name.
+        """Predict the programming language name of the given source code.
 
-        ``text`` -- source code.
-
+        :param str text: source code.
+        :return: language name
+        :rtype: str
         """
         values = extract(text)
         input_fn = _to_func([[values], []])
@@ -76,11 +75,12 @@ class Guess:
         return sorted(self.languages)[pos]
 
     def probable_languages(self, text):
-        """Returns the list of most probable programming languages,
+        """List of most probable programming languages,
         the list is ordered from the most probable to the less probable.
 
-        ``text`` -- source code.
-
+        :param str text: source code.
+        :return: languages list
+        :rtype: list
         """
         values = extract(text)
         input_fn = _to_func([[values], []])
@@ -98,10 +98,12 @@ class Guess:
         return [names[pos] for pos in positions]
 
     def learn(self, input_dir):
-        """Learns languages features from source files.
+        """Learn languages features from source files.
 
-        ``input_dir`` -- source code files directory.
-
+        :raise GuesslangError: when the default model is used for learning
+        :param str input_dir: source code files directory.
+        :return: learning accuracy
+        :rtype: float
         """
         if self.is_default:
             LOGGER.error("Cannot learn using default model")
@@ -147,8 +149,9 @@ class Guess:
     def test(self, input_dir):
         """Tests the model accuracy using source code files.
 
-        ``input_dir`` -- source code files directory.
-
+        :param str input_dir: source code files directory.
+        :return: test report
+        :rtype: dict
         """
         report = {
             'overall-accuracy': 0,

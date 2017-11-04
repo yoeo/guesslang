@@ -21,19 +21,22 @@ _FACTOR = 23
 
 
 def extract(text):
-    """Returns a vector (list of float values) that represents the text.
+    """Transform the text into a vector of float values.
+    The vector is a representation of the text.
 
-    ``text`` -- the text to represent.
-
+    :param str text: the text to represent
+    :return: representation
+    :rtype: list
     """
     return _normalize(_vectorize(split(text)))
 
 
 def split(text):
-    """Returns a text split into a list of tokens.
+    """Split a text into a list of tokens.
 
-    ``text`` -- the text to split.
-
+    :param str text: the text to split
+    :return: tokens
+    :rtype: list
     """
     return [word for word in _SEPARATOR.split(text) if word.strip(' \t')]
 

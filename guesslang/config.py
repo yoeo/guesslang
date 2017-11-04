@@ -47,8 +47,7 @@ class ColorLogFormatter(logging.Formatter):
 def config_logging(debug=False):
     """Set-up application and `tensorflow` logging.
 
-    ``debug`` -- show or hide debug messages.
-
+    :param bool debug: show or hide debug messages
     """
     if debug:
         level = 'DEBUG'
@@ -66,10 +65,11 @@ def config_logging(debug=False):
 
 
 def config_dict(name):
-    """Returns a JSON dict loaded from Guesslang config directory.
+    """Load a JSON configuration dict from Guesslang config directory.
 
-    ``name`` -- the JSON file name.
-
+    :param str name: the JSON file name.
+    :return: configuration
+    :rtype: dict
     """
     try:
         content = resource_string(_PACKAGE, _DATADIR.format(name)).decode()
@@ -81,12 +81,12 @@ def config_dict(name):
 
 
 def model_info(model_dir=None):
-    """Returns Guesslang model directory name,
+    """Retrieve Guesslang model directory name,
     and tells if it is the default model.
 
-    ``model_dir`` -- the model location,
-                     if `None` the default model is returned.
-
+    :param str model_dir: model location,  if `None` default model is selected
+    :return: selected model info
+    :rtype: tuple
     """
     if model_dir is None:
         try:
