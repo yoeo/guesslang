@@ -47,12 +47,19 @@ def test_guess_learn():
         with pytest.raises(GuesslangError):
             guesser.Guess().learn(dirname)
 
-    with tempfile.TemporaryDirectory() as model_dir:
-        with tempfile.TemporaryDirectory() as dirname:
-            copy_fixtures(dirname, nb_times=10)
+    temp_model_dir = tempfile.TemporaryDirectory()
+    with tempfile.TemporaryDirectory() as dirname:
+        copy_fixtures(dirname, nb_times=10)
 
-            accuracy = guesser.Guess(model_dir).learn(dirname)
-            assert 0 <= accuracy <= 1
+        accuracy = guesser.Guess(temp_model_dir.name).learn(dirname)
+        assert 0 <= accuracy <= 1
+
+    try:
+        temp_model_dir.cleanup()
+    except OSError:
+        # Occures on Windows only
+        # - OSError: [WinError 145] The directory is not empty
+        pass
 
 
 def test_guess_test():
