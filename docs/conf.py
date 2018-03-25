@@ -26,20 +26,28 @@ from datetime import datetime
 from pathlib import Path
 import re
 import sys
+from unittest.mock import MagicMock
 
 
 # Add Guesslang path for autodoc
 sys.path.insert(0, str(Path(__file__).parent.parent.absolute()))
-autodoc_mock_imports = ['tensorflow', 'numpy']
 
-# Ugly mock
-import sys
-from unittest.mock import MagicMock
+# Mock dependencies with autodoc:
+# + works when generating doc locally
+# - doesn't work when generating doc on readthedocs.org
+#
+# autodoc_mock_imports = ['tensorflow', 'numpy']
 
+
+# Manually mock dependencies:
+# + works when generating doc locally
+# + works when generating doc on readthedocs.org
+# See: http://docs.readthedocs.io/en/latest/faq.html
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
+
 
 MOCK_MODULES = ['tensorflow', 'numpy']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
