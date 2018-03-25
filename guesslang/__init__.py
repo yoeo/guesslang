@@ -9,4 +9,4 @@ from guesslang.guesser import Guess
 from guesslang.utils import GuesslangError
 
 
-__version__ = '0.9.2'
+__version__ = '0.9.3.dev1'
