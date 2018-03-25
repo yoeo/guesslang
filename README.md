@@ -77,6 +77,12 @@ pip3 install guesslang
 pip3 install .
 ```
 
+* Windows specific
+
+To run [Tensorflow](https://github.com/tensorflow/tensorflow)
+on Microsoft Windows you need to install Visual C++ runtime libraries,
+available on [Microsoft website](https://www.microsoft.com/en-us/download/details.aspx?id=53587)
+
 ## Guesslang command line
 
 * Show all available options
