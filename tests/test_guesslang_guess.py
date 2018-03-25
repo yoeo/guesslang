@@ -35,6 +35,9 @@ def test_guess_probable_languages():
     content = C_FILE.read_text()
     assert 'C' in guesser.Guess().probable_languages(content)
 
+    names = guesser.Guess().probable_languages(content, max_languages=5)
+    assert len(names) < 5
+
 
 def test_guess_learn():
     with tempfile.TemporaryDirectory() as dirname:
