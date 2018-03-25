@@ -4,9 +4,8 @@ import gc
 import logging
 from pathlib import Path
 from math import ceil
-from operator import itemgetter
-from statistics import stdev
 
+import numpy as np
 import tensorflow as tf
 
 from guesslang.config import model_info, config_dict
@@ -74,11 +73,12 @@ class Guess:
         LOGGER.debug("Predicted language position %s", pos)
         return sorted(self.languages)[pos]
 
-    def probable_languages(self, text):
+    def probable_languages(self, text, max_languages=3):
         """List of most probable programming languages,
         the list is ordered from the most probable to the less probable.
 
         :param str text: source code.
+        :param int max_languages: maximum number of listed languages.
         :return: languages list
         :rtype: list
         """
@@ -86,16 +86,23 @@ class Guess:
         input_fn = _to_func([[values], []])
         proba = next(self._classifier.predict_proba(input_fn=input_fn))
         proba = proba.tolist()
-        threshold = max(proba) - _K_STDEV * stdev(proba)
 
-        items = sorted(enumerate(proba), key=itemgetter(1), reverse=True)
-        LOGGER.debug("Threshold: %f, probabilities: %s", threshold, items)
+        # Order the languages from the most probable to the least probable
+        positions = np.argsort(proba)[::-1]
+        names = np.sort(list(self.languages))
+        names = names[positions]
 
-        positions = [pos for pos, value in items if value > threshold]
-        LOGGER.debug("Predicted languages positions %s", positions)
+        # Find the most distant consecutive languages:
+        # A logarithmic scale is used here because the probabilities here
+        # are most of the time really close to zero
+        proba = np.log(proba)
+        proba = np.sort(proba)[::-1]
+        distances = [proba[pos] - proba[pos+1] for pos in range(len(proba)-1)]
+        max_distance_pos = 1 + np.argmax(distances)
 
-        names = sorted(self.languages)
-        return [names[pos] for pos in positions]
+        # Keep the languages that are close to the most probable one
+        nb_languages = min(max_languages, max_distance_pos)
+        return names[:nb_languages]
 
     def learn(self, input_dir):
         """Learn languages features from source files.
