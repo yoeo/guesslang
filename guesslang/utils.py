@@ -30,7 +30,7 @@ def search_files(source, extensions):
 
     :raise GuesslangError: when there is not enough files in the directory
     :param str source: directory name
-    :param str extensions: list of file extensions
+    :param list extensions: list of file extensions
     :return: filenames
     :rtype: list
     """

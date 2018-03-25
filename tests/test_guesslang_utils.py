@@ -19,16 +19,16 @@ EXTENSIONS = ['c', 'py']
 
 def test_safe_read_file():
     for _ in range(10):
-        with tempfile.NamedTemporaryFile('w+b') as tmp_file:
-            rand_value = random.getrandbits(8*NB_BYTES)
+        with tempfile.TemporaryDirectory() as dirname:
+            file_path = Path(dirname).joinpath('example_file')
 
             # Write random bytes into the file
-            tmp_file.write(rand_value.to_bytes(NB_BYTES, 'little'))
-            tmp_file.seek(0)
+            rand_value = random.getrandbits(8*NB_BYTES)
+            file_path.write_bytes(rand_value.to_bytes(NB_BYTES, 'little'))
 
-            text = utils.safe_read_file(Path(tmp_file.name))
-
-            assert text  # Text retrieved without raising errors
+            # Retrieve text without raising errors
+            text = utils.safe_read_file(file_path)
+            assert text
 
 
 def test_search_files():
