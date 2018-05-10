@@ -12,12 +12,12 @@ LOGGER = logging.getLogger(__name__)
 CONTENT_SIZE = 2**10
 
 SPECIAL_KEYWORDS = {'num': '<number>', 'var': '<variable>'}
-_KEYWORDS = config_dict('keywords.json')
+KEYWORDS = config_dict('keywords.json')
 
-_SEPARATOR = re.compile(r'(\W)')
+SEPARATOR = re.compile(r'(\W)')
 
-_SHIFT = 17
-_FACTOR = 23
+SHIFT = 17
+FACTOR = 23
 
 
 def extract(text):
@@ -38,18 +38,18 @@ def split(text):
     :return: tokens
     :rtype: list
     """
-    return [word for word in _SEPARATOR.split(text) if word.strip(' \t')]
+    return [word for word in SEPARATOR.split(text) if word.strip(' \t')]
 
 
 def _vectorize(tokens):
     values = []
     for token in tokens:
-        if token in _KEYWORDS_CACHE:
-            values.append(_KEYWORDS_CACHE[token])
+        if token in KEYWORDS_CACHE:
+            values.append(KEYWORDS_CACHE[token])
         elif token.isdigit():
-            values.append(_KEYWORDS_CACHE[SPECIAL_KEYWORDS['num']])
+            values.append(KEYWORDS_CACHE[SPECIAL_KEYWORDS['num']])
         else:
-            values.append(_KEYWORDS_CACHE[SPECIAL_KEYWORDS['var']])
+            values.append(KEYWORDS_CACHE[SPECIAL_KEYWORDS['var']])
 
     bigrams = [_merge(values[pos:pos+2]) for pos in range(len(values) - 1)]
     trigrams = [_merge(values[pos:pos+3]) for pos in range(len(values) - 2)]
@@ -63,10 +63,10 @@ def _vectorize(tokens):
 
 
 def _merge(hash_list):
-    merged_hash = _SHIFT
+    merged_hash = SHIFT
     merged_weight = 1
     for short_hash, weight in hash_list:
-        merged_hash = (merged_hash * _FACTOR + short_hash) % CONTENT_SIZE
+        merged_hash = (merged_hash * FACTOR + short_hash) % CONTENT_SIZE
         merged_weight *= weight
     return (merged_hash, merged_weight)
 
@@ -80,12 +80,12 @@ def _normalize(vector):
 
 
 def _prepare_cache():
-    # Called to fill "_KEYWORDS_CACHE" dictionary
+    # Called to fill "KEYWORDS_CACHE" dictionary
     return {
         # word: (short_hash, weight)
         word: (hash_value % CONTENT_SIZE, 1 if len(word) % 2 == 0 else -1)
-        for word, hash_value in _KEYWORDS.items()
+        for word, hash_value in KEYWORDS.items()
     }
 
 
-_KEYWORDS_CACHE = _prepare_cache()
+KEYWORDS_CACHE = _prepare_cache()

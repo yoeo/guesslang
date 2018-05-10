@@ -2,10 +2,10 @@
 
 import gc
 import logging
+from operator import itemgetter
 from pathlib import Path
-from math import ceil
+from math import ceil, log
 
-import numpy as np
 import tensorflow as tf
 
 from guesslang.config import model_info, config_dict
@@ -16,16 +16,14 @@ from guesslang.utils import (
 
 LOGGER = logging.getLogger(__name__)
 
-_NEURAL_NETWORK_HIDDEN_LAYERS = [256, 64, 16]
-_OPTIMIZER_STEP = 0.05
+NEURAL_NETWORK_HIDDEN_LAYERS = [256, 64, 16]
+OPTIMIZER_STEP = 0.05
 
-_FITTING_FACTOR = 20  # How many time the same data is used for fitting
-_CHUNK_PROPORTION = 0.2
-_CHUNK_SIZE = 1000
+FITTING_FACTOR = 20  # How many time the same data is used for fitting
+CHUNK_PROPORTION = 0.2
+CHUNK_SIZE = 1000
 
-_K_STDEV = 2
-_ACCURACY_THRESHOLDS = [60, 90, 99]
-_REPORT_FILENAME = 'report-{}.json'
+ACCURACY_THRESHOLDS = [60, 90, 99]
 
 
 class Guess:
@@ -53,10 +51,10 @@ class Guess:
         self._classifier = tf.contrib.learn.DNNLinearCombinedClassifier(
             linear_feature_columns=feature_columns,
             dnn_feature_columns=feature_columns,
-            dnn_hidden_units=_NEURAL_NETWORK_HIDDEN_LAYERS,
+            dnn_hidden_units=NEURAL_NETWORK_HIDDEN_LAYERS,
             n_classes=n_classes,
-            linear_optimizer=tf.train.RMSPropOptimizer(_OPTIMIZER_STEP),
-            dnn_optimizer=tf.train.RMSPropOptimizer(_OPTIMIZER_STEP),
+            linear_optimizer=tf.train.RMSPropOptimizer(OPTIMIZER_STEP),
+            dnn_optimizer=tf.train.RMSPropOptimizer(OPTIMIZER_STEP),
             model_dir=self.model_dir)
 
     def language_name(self, text):
@@ -73,6 +71,22 @@ class Guess:
         LOGGER.debug("Predicted language position %s", pos)
         return sorted(self.languages)[pos]
 
+    def scores(self, text):
+        """A score for each language corresponding to the probability that
+        the text is written in the given language.
+        The score is a `float` value between 0.0 and 1.0
+
+        :param str text: source code.
+        :return: language to score dictionary
+        :rtype: dict
+        """
+        values = extract(text)
+        input_fn = _to_func([[values], []])
+        prediction = self._classifier.predict_proba(input_fn=input_fn)
+        probabilities = next(prediction).tolist()
+        sorted_languages = sorted(self.languages)
+        return dict(zip(sorted_languages, probabilities))
+
     def probable_languages(self, text, max_languages=3):
         """List of most probable programming languages,
         the list is ordered from the most probable to the less probable.
@@ -80,29 +94,25 @@ class Guess:
         :param str text: source code.
         :param int max_languages: maximum number of listed languages.
         :return: languages list
-        :rtype: list
+        :rtype: tuple
         """
-        values = extract(text)
-        input_fn = _to_func([[values], []])
-        proba = next(self._classifier.predict_proba(input_fn=input_fn))
-        proba = proba.tolist()
+        scores = self.scores(text)
 
-        # Order the languages from the most probable to the least probable
-        positions = np.argsort(proba)[::-1]
-        names = np.sort(list(self.languages))
-        names = names[positions]
+        # Sorted from the most probable language to the least probable
+        sorted_scores = sorted(scores.items(), key=itemgetter(1), reverse=True)
+        languages, probabilities = list(zip(*sorted_scores))
 
-        # Find the most distant consecutive languages:
-        # A logarithmic scale is used here because the probabilities here
+        # Find the most distant consecutive languages.
+        # A logarithmic scale is used here because the probabilities
         # are most of the time really close to zero
-        proba = np.log(proba)
-        proba = np.sort(proba)[::-1]
-        distances = [proba[pos] - proba[pos+1] for pos in range(len(proba)-1)]
-        max_distance_pos = 1 + np.argmax(distances)
+        rescaled_probabilities = [log(proba) for proba in probabilities]
+        distances = [
+            rescaled_probabilities[pos] - rescaled_probabilities[pos+1]
+            for pos in range(len(rescaled_probabilities)-1)]
 
-        # Keep the languages that are close to the most probable one
-        nb_languages = min(max_languages, max_distance_pos)
-        return names[:nb_languages]
+        max_distance_pos = max(enumerate(distances, 1), key=itemgetter(1))[0]
+        limit = min(max_distance_pos, max_languages)
+        return languages[:limit]
 
     def learn(self, input_dir):
         """Learn languages features from source files.
@@ -122,7 +132,7 @@ class Guess:
         extensions = [ext for exts in languages.values() for ext in exts]
         files = search_files(input_dir, extensions)
         nb_files = len(files)
-        chunk_size = min(int(_CHUNK_PROPORTION * nb_files), _CHUNK_SIZE)
+        chunk_size = min(int(CHUNK_PROPORTION * nb_files), CHUNK_SIZE)
 
         LOGGER.debug("Evaluation files count: %d", chunk_size)
         LOGGER.debug("Training files count: %d", nb_files - chunk_size)
@@ -142,7 +152,7 @@ class Guess:
             training_data = extract_from_files(training_files, languages)
             LOGGER.debug("Training data count: %d", len(training_data[0]))
 
-            steps = int(_FITTING_FACTOR * len(training_data[0]) / 100)
+            steps = int(FITTING_FACTOR * len(training_data[0]) / 100)
             LOGGER.debug("Fitting, steps count: %d", steps)
             self._classifier.fit(input_fn=_to_func(training_data), steps=steps)
 
@@ -231,7 +241,7 @@ def _to_func(vector):
 
 
 def _comment(accuracy):
-    not_bad, good, perfect = _ACCURACY_THRESHOLDS
+    not_bad, good, perfect = ACCURACY_THRESHOLDS
     percentage = 100 * accuracy
 
     if percentage < not_bad:

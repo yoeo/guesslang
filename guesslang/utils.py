@@ -15,9 +15,9 @@ LOGGER = logging.getLogger(__name__)
 
 random.seed()
 
-_FILE_ENCODINGS = ('utf-8', 'latin-1', 'windows-1250', 'windows-1252')
-_NB_LINES = 100
-_NB_FILES_MIN = 10
+FILE_ENCODINGS = ('utf-8', 'latin-1', 'windows-1250', 'windows-1252')
+NB_LINES = 100
+NB_FILES_MIN = 10
 
 
 class GuesslangError(Exception):
@@ -40,11 +40,11 @@ def search_files(source, extensions):
     nb_files = len(files)
     LOGGER.debug("Total files found: %d", nb_files)
 
-    if nb_files < _NB_FILES_MIN:
+    if nb_files < NB_FILES_MIN:
         LOGGER.error("Too few source files")
         raise GuesslangError(
             '{} source files found in {}. {} files minimum is required'.format(
-                nb_files, source, _NB_FILES_MIN))
+                nb_files, source, NB_FILES_MIN))
 
     random.shuffle(files)
     return files
@@ -81,7 +81,7 @@ def _extract_features(path, rank_map):
         raise GuesslangError('Language not found for ext: {}'.format(ext))
 
     content = safe_read_file(path)
-    content = '\n'.join(content.splitlines()[:_NB_LINES])
+    content = '\n'.join(content.splitlines()[:NB_LINES])
     return [extract(content), rank]
 
 
@@ -106,7 +106,7 @@ def safe_read_file(file_path):
     :return: text file content
     :rtype: str
     """
-    for encoding in _FILE_ENCODINGS:
+    for encoding in FILE_ENCODINGS:
         try:
             return file_path.read_text(encoding=encoding)
         except UnicodeError:
