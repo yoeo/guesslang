@@ -40,7 +40,8 @@ def test_guess_scores():
     scores = guess.scores(content)
     scored_languages = list(scores)
     best_scored_language = max(scores.items(), key=itemgetter(1))[0]
-    assert known_languages == scored_languages
+    assert set(known_languages) == set(scored_languages)
+    assert len(known_languages) == len(scored_languages)
     assert best_scored_language == 'C'
 
 

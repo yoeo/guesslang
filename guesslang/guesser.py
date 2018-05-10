@@ -2,10 +2,10 @@
 
 import gc
 import logging
+from operator import itemgetter
 from pathlib import Path
-from math import ceil
+from math import ceil, log
 
-import numpy as np
 import tensorflow as tf
 
 from guesslang.config import model_info, config_dict
@@ -94,29 +94,25 @@ class Guess:
         :param str text: source code.
         :param int max_languages: maximum number of listed languages.
         :return: languages list
-        :rtype: list
+        :rtype: tuple
         """
-        values = extract(text)
-        input_fn = _to_func([[values], []])
-        proba = next(self._classifier.predict_proba(input_fn=input_fn))
-        proba = proba.tolist()
+        scores = self.scores(text)
 
-        # Order the languages from the most probable to the least probable
-        positions = np.argsort(proba)[::-1]
-        names = np.sort(list(self.languages))
-        names = names[positions]
+        # Sorted from the most probable language to the least probable
+        sorted_scores = sorted(scores.items(), key=itemgetter(1), reverse=True)
+        languages, probabilities = list(zip(*sorted_scores))
 
-        # Find the most distant consecutive languages:
-        # A logarithmic scale is used here because the probabilities here
+        # Find the most distant consecutive languages.
+        # A logarithmic scale is used here because the probabilities
         # are most of the time really close to zero
-        proba = np.log(proba)
-        proba = np.sort(proba)[::-1]
-        distances = [proba[pos] - proba[pos+1] for pos in range(len(proba)-1)]
-        max_distance_pos = 1 + np.argmax(distances)
+        rescaled_probabilities = [log(proba) for proba in probabilities]
+        distances = [
+            rescaled_probabilities[pos] - rescaled_probabilities[pos+1]
+            for pos in range(len(rescaled_probabilities)-1)]
 
-        # Keep the languages that are close to the most probable one
-        nb_languages = min(max_languages, max_distance_pos)
-        return names[:nb_languages]
+        max_distance_pos = max(enumerate(distances, 1), key=itemgetter(1))[0]
+        limit = min(max_distance_pos, max_languages)
+        return languages[:limit]
 
     def learn(self, input_dir):
         """Learn languages features from source files.
