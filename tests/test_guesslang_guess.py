@@ -1,3 +1,4 @@
+from operator import itemgetter
 from pathlib import Path
 import tempfile
 
@@ -31,12 +32,24 @@ def test_guess_language_name():
     assert guesser.Guess().language_name(content) == 'C'
 
 
+def test_guess_scores():
+    guess = guesser.Guess()
+    known_languages = list(guess.languages)
+
+    content = C_FILE.read_text()
+    scores = guess.scores(content)
+    scored_languages = list(scores)
+    best_scored_language = max(scores.items(), key=itemgetter(1))[0]
+    assert known_languages == scored_languages
+    assert best_scored_language == 'C'
+
+
 def test_guess_probable_languages():
     content = C_FILE.read_text()
     assert 'C' in guesser.Guess().probable_languages(content)
 
     names = guesser.Guess().probable_languages(content, max_languages=5)
-    assert len(names) < 5
+    assert len(names) <= 5
 
 
 def test_guess_learn():

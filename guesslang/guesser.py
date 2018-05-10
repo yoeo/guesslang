@@ -71,6 +71,22 @@ class Guess:
         LOGGER.debug("Predicted language position %s", pos)
         return sorted(self.languages)[pos]
 
+    def scores(self, text):
+        """A score for each language corresponding to the probability that
+        the text is written in the given language.
+        The score is a `float` value between 0.0 and 1.0
+
+        :param str text: source code.
+        :return: language to score dictionary
+        :rtype: dict
+        """
+        values = extract(text)
+        input_fn = _to_func([[values], []])
+        prediction = self._classifier.predict_proba(input_fn=input_fn)
+        probabilities = next(prediction).tolist()
+        sorted_languages = sorted(self.languages)
+        return dict(zip(sorted_languages, probabilities))
+
     def probable_languages(self, text, max_languages=3):
         """List of most probable programming languages,
         the list is ordered from the most probable to the less probable.
