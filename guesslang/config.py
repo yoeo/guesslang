@@ -13,9 +13,9 @@ import tensorflow as tf
 
 LOGGER = logging.getLogger(__name__)
 
-_PACKAGE = Requirement.parse('guesslang')
-_DATADIR = 'guesslang/data/{}'
-_DATA_FALLBACK = Path(__file__).parent.joinpath('data')
+PACKAGE = Requirement.parse('guesslang')
+DATADIR = 'guesslang/data/{}'
+DATA_FALLBACK = Path(__file__).parent.joinpath('data')
 
 
 class ColorLogFormatter(logging.Formatter):
@@ -72,10 +72,10 @@ def config_dict(name):
     :rtype: dict
     """
     try:
-        content = resource_string(_PACKAGE, _DATADIR.format(name)).decode()
+        content = resource_string(PACKAGE, DATADIR.format(name)).decode()
     except DistributionNotFound as error:
         LOGGER.warning("Cannot load %s from packages: %s", name, error)
-        content = _DATA_FALLBACK.joinpath(name).read_text()
+        content = DATA_FALLBACK.joinpath(name).read_text()
 
     return json.loads(content)
 
@@ -90,10 +90,10 @@ def model_info(model_dir=None):
     """
     if model_dir is None:
         try:
-            model_dir = resource_filename(_PACKAGE, _DATADIR.format('model'))
+            model_dir = resource_filename(PACKAGE, DATADIR.format('model'))
         except DistributionNotFound as error:
             LOGGER.warning("Cannot load model from packages: %s", error)
-            model_dir = str(_DATA_FALLBACK.joinpath('model').absolute())
+            model_dir = str(DATA_FALLBACK.joinpath('model').absolute())
         is_default_model = True
     else:
         is_default_model = False

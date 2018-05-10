@@ -16,16 +16,14 @@ from guesslang.utils import (
 
 LOGGER = logging.getLogger(__name__)
 
-_NEURAL_NETWORK_HIDDEN_LAYERS = [256, 64, 16]
-_OPTIMIZER_STEP = 0.05
+NEURAL_NETWORK_HIDDEN_LAYERS = [256, 64, 16]
+OPTIMIZER_STEP = 0.05
 
-_FITTING_FACTOR = 20  # How many time the same data is used for fitting
-_CHUNK_PROPORTION = 0.2
-_CHUNK_SIZE = 1000
+FITTING_FACTOR = 20  # How many time the same data is used for fitting
+CHUNK_PROPORTION = 0.2
+CHUNK_SIZE = 1000
 
-_K_STDEV = 2
-_ACCURACY_THRESHOLDS = [60, 90, 99]
-_REPORT_FILENAME = 'report-{}.json'
+ACCURACY_THRESHOLDS = [60, 90, 99]
 
 
 class Guess:
@@ -53,10 +51,10 @@ class Guess:
         self._classifier = tf.contrib.learn.DNNLinearCombinedClassifier(
             linear_feature_columns=feature_columns,
             dnn_feature_columns=feature_columns,
-            dnn_hidden_units=_NEURAL_NETWORK_HIDDEN_LAYERS,
+            dnn_hidden_units=NEURAL_NETWORK_HIDDEN_LAYERS,
             n_classes=n_classes,
-            linear_optimizer=tf.train.RMSPropOptimizer(_OPTIMIZER_STEP),
-            dnn_optimizer=tf.train.RMSPropOptimizer(_OPTIMIZER_STEP),
+            linear_optimizer=tf.train.RMSPropOptimizer(OPTIMIZER_STEP),
+            dnn_optimizer=tf.train.RMSPropOptimizer(OPTIMIZER_STEP),
             model_dir=self.model_dir)
 
     def language_name(self, text):
@@ -122,7 +120,7 @@ class Guess:
         extensions = [ext for exts in languages.values() for ext in exts]
         files = search_files(input_dir, extensions)
         nb_files = len(files)
-        chunk_size = min(int(_CHUNK_PROPORTION * nb_files), _CHUNK_SIZE)
+        chunk_size = min(int(CHUNK_PROPORTION * nb_files), CHUNK_SIZE)
 
         LOGGER.debug("Evaluation files count: %d", chunk_size)
         LOGGER.debug("Training files count: %d", nb_files - chunk_size)
@@ -142,7 +140,7 @@ class Guess:
             training_data = extract_from_files(training_files, languages)
             LOGGER.debug("Training data count: %d", len(training_data[0]))
 
-            steps = int(_FITTING_FACTOR * len(training_data[0]) / 100)
+            steps = int(FITTING_FACTOR * len(training_data[0]) / 100)
             LOGGER.debug("Fitting, steps count: %d", steps)
             self._classifier.fit(input_fn=_to_func(training_data), steps=steps)
 
@@ -231,7 +229,7 @@ def _to_func(vector):
 
 
 def _comment(accuracy):
-    not_bad, good, perfect = _ACCURACY_THRESHOLDS
+    not_bad, good, perfect = ACCURACY_THRESHOLDS
     percentage = 100 * accuracy
 
     if percentage < not_bad:

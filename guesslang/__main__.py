@@ -12,7 +12,7 @@ from guesslang import Guess, GuesslangError, config_logging
 
 LOGGER = logging.getLogger(__name__)
 
-_REPORT_FILENAME = 'report-{}.json'
+REPORT_FILENAME = 'report-{}.json'
 
 
 def main():
@@ -95,7 +95,7 @@ def _read_file(input_file):
 
 
 def _save_report(results):
-    report_filename = _REPORT_FILENAME.format(int(time.time()))
+    report_filename = REPORT_FILENAME.format(int(time.time()))
     try:
         with open(report_filename, 'w') as report_file:
             json.dump(results, report_file, indent=2, sort_keys=True)
