@@ -1,2 +1,3 @@
-pytest
 requests>=2.13,<2.14
+pytest
+Sphinx

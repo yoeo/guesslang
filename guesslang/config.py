@@ -4,6 +4,7 @@ import json
 import logging.config
 from pathlib import Path
 import platform
+from typing import cast, Dict, Any, Tuple, Optional
 
 from pkg_resources import (
     Requirement, resource_string, resource_filename, DistributionNotFound)
@@ -33,7 +34,7 @@ class ColorLogFormatter(logging.Formatter):
         'END': '\033[0m',
     }
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         if platform.system() != 'Linux':  # Avoid funny logs on Windows & MacOS
             return super().format(record)
 
@@ -44,7 +45,7 @@ class ColorLogFormatter(logging.Formatter):
         return super().format(record)
 
 
-def config_logging(debug=False):
+def config_logging(debug: bool = False) -> None:
     """Set-up application and `tensorflow` logging.
 
     :param bool debug: show or hide debug messages
@@ -64,7 +65,7 @@ def config_logging(debug=False):
     tf.logging.set_verbosity(tf_level)
 
 
-def config_dict(name):
+def config_dict(name: str) -> Dict[str, Any]:
     """Load a JSON configuration dict from Guesslang config directory.
 
     :param str name: the JSON file name.
@@ -77,10 +78,10 @@ def config_dict(name):
         LOGGER.warning("Cannot load %s from packages: %s", name, error)
         content = DATA_FALLBACK.joinpath(name).read_text()
 
-    return json.loads(content)
+    return cast(Dict[str, Any], json.loads(content))
 
 
-def model_info(model_dir=None):
+def model_info(model_dir: Optional[str] = None) -> Tuple[str, bool]:
     """Retrieve Guesslang model directory name,
     and tells if it is the default model.
 

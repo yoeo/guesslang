@@ -5,6 +5,7 @@ import multiprocessing
 from pathlib import Path
 import random
 import signal
+from typing import List, Dict, Sequence, Tuple
 
 import numpy as np
 
@@ -19,12 +20,14 @@ FILE_ENCODINGS = ('utf-8', 'latin-1', 'windows-1250', 'windows-1252')
 NB_LINES = 100
 NB_FILES_MIN = 10
 
+DataSet = Tuple[Sequence[Sequence[float]], Sequence[int]]
+
 
 class GuesslangError(Exception):
     """`guesslang` base exception class"""
 
 
-def search_files(source, extensions):
+def search_files(source: str, extensions: List[str]) -> List[Path]:
     """Name of the files with the right extensions
     found in source directory and its subdirectories.
 
@@ -50,7 +53,9 @@ def search_files(source, extensions):
     return files
 
 
-def extract_from_files(files, languages):
+def extract_from_files(
+        files: List[Path],
+        languages: Dict[str, str]) -> DataSet:
     """Extract arrays of features from the given files.
 
     :param list files: list of filenames
@@ -69,12 +74,14 @@ def extract_from_files(files, languages):
     return arrays
 
 
-def _process_init():
+def _process_init() -> None:
     # Stop the subprocess silently when the main process is killed
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
-def _extract_features(path, rank_map):
+def _extract_features(
+        path: Path,
+        rank_map: Dict[str, int]) -> Tuple[List[float], int]:
     ext = path.suffix.lstrip('.')
     rank = rank_map.get(ext)
     if rank is None:
@@ -82,10 +89,10 @@ def _extract_features(path, rank_map):
 
     content = safe_read_file(path)
     content = '\n'.join(content.splitlines()[:NB_LINES])
-    return [extract(content), rank]
+    return (extract(content), rank)
 
 
-def _to_arrays(features):
+def _to_arrays(features: List[Tuple[List[float], int]]) -> DataSet:
     # Flatten and split the dataset
     ranks = []
     content_vectors = []
@@ -97,7 +104,7 @@ def _to_arrays(features):
     return (np.array(content_vectors), np.array(ranks))
 
 
-def safe_read_file(file_path):
+def safe_read_file(file_path: Path) -> str:
     """Read the text file, several text encodings are tried until
     the file content is correctly decoded.
 
