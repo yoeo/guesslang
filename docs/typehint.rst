@@ -371,8 +371,8 @@ This section will be expanded later...
 
 Now let's put all that into pratice.
 
-How to add type hints to Guesslang ?
-------------------------------------
+How to "type hint" Guesslang?
+-----------------------------
 
 Current status
 ^^^^^^^^^^^^^^
