@@ -1,5 +1,5 @@
-Adding type hints to the project
-================================
+Adding type hints
+=================
 
 .. toctree::
    :maxdepth: 2
@@ -478,8 +478,8 @@ Fix typing issues
 
 wip...
 
-Benefits observed
------------------
+Any actual benefits
+-------------------
 
 Benefits:
 * Better code understanding.
