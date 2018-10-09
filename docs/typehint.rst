@@ -478,8 +478,8 @@ Fix typing issues
 
 wip...
 
-Any actual benefits
--------------------
+Any actual benefits?
+--------------------
 
 Benefits:
 * Better code understanding.
