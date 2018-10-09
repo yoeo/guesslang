@@ -96,6 +96,7 @@ Table of Contents
    usage
    how
    guesslang
+   typehint
 
 * `Guesslang on Github <https://github.com/yoeo/guesslang>`_
 
