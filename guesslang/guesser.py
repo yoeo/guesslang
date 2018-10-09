@@ -174,7 +174,7 @@ class Guess:
         :return: test report
         :rtype: dict
         """
-        report = {
+        report: Dict[str, Any] = {
             'overall-accuracy': 0,
             'per-language': {
                 lang: {
