@@ -39,11 +39,11 @@ class Guess:
         #: `tensorflow` model directory
         self.model_dir: str = model_data[0]
 
-        #: tells if current model is the default model
+        #: Tells if the current model is the default model
         self.is_default: bool = model_data[1]
 
-        #: supported languages with associated extensions
-        self.languages: Dict[str, str] = config_dict('languages.json')
+        #: Supported languages associated with their extensions
+        self.languages: Dict[str, List[str]] = config_dict('languages.json')
 
         n_classes = len(self.languages)
         feature_columns = [
@@ -91,7 +91,7 @@ class Guess:
             text: str,
             max_languages: int = 3) -> Tuple[str, ...]:
         """List of most probable programming languages,
-        the list is ordered from the most probable to the less probable.
+        the list is ordered from the most probable to the least probable one.
 
         :param text: source code.
         :param max_languages: maximum number of listed languages.

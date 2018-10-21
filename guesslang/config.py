@@ -35,7 +35,7 @@ class ColorLogFormatter(logging.Formatter):
     }
 
     def format(self, record: logging.LogRecord) -> str:
-        """Format a log record and return a colored log message.
+        """Format log records to produce colored messages.
 
         :param record: log record
         :return: log message

@@ -28,8 +28,8 @@ class GuesslangError(Exception):
 
 
 def search_files(source: str, extensions: List[str]) -> List[Path]:
-    """Name of the files with the right extensions
-    found in source directory and its subdirectories.
+    """Retrieve files located the source directory and its subdirectories,
+    whose extension match one of the listed extensions.
 
     :raise GuesslangError: when there is not enough files in the directory
     :param source: directory name
@@ -104,11 +104,11 @@ def _to_arrays(features: List[Tuple[List[float], int]]) -> DataSet:
 
 
 def safe_read_file(file_path: Path) -> str:
-    """Read the text file, several text encodings are tried until
+    """Read a text file. Several text encodings are tried until
     the file content is correctly decoded.
 
     :raise GuesslangError: when the file encoding is not supported
-    :param file_path: path to the file to read
+    :param file_path: path to the input file
     :return: text file content
     """
     for encoding in FILE_ENCODINGS:
