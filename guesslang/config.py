@@ -35,6 +35,12 @@ class ColorLogFormatter(logging.Formatter):
     }
 
     def format(self, record: logging.LogRecord) -> str:
+        """Format a log record and return a colored log message.
+
+        :param logging.LogRecord record: log record
+        :return: log message
+        :rtype: str
+        """
         if platform.system() != 'Linux':  # Avoid funny logs on Windows & MacOS
             return super().format(record)
 
@@ -70,7 +76,7 @@ def config_dict(name: str) -> Dict[str, Any]:
 
     :param str name: the JSON file name.
     :return: configuration
-    :rtype: dict
+    :rtype: Dict[str, Any]
     """
     try:
         content = resource_string(PACKAGE, DATADIR.format(name)).decode()
@@ -85,9 +91,11 @@ def model_info(model_dir: Optional[str] = None) -> Tuple[str, bool]:
     """Retrieve Guesslang model directory name,
     and tells if it is the default model.
 
-    :param str model_dir: model location,  if `None` default model is selected
-    :return: selected model info
-    :rtype: tuple
+    :param Optional[str] model_dir: model location,
+        if `None` default model is selected
+    :return: selected model directory with an indication
+        that the model is the default or not
+    :rtype: Tuple[str, bool]
     """
     if model_dir is None:
         try:

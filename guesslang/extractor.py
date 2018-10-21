@@ -27,7 +27,7 @@ def extract(text: str) -> List[float]:
 
     :param str text: the text to represent
     :return: representation
-    :rtype: list
+    :rtype: List[float]
     """
     return _normalize(_vectorize(split(text)))
 
@@ -37,7 +37,7 @@ def split(text: str) -> List[str]:
 
     :param str text: the text to split
     :return: tokens
-    :rtype: list
+    :rtype: List[str]
     """
     return [word for word in SEPARATOR.split(text) if word.strip(' \t')]
 

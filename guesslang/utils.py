@@ -33,9 +33,9 @@ def search_files(source: str, extensions: List[str]) -> List[Path]:
 
     :raise GuesslangError: when there is not enough files in the directory
     :param str source: directory name
-    :param list extensions: list of file extensions
+    :param List[str] extensions: list of file extensions
     :return: filenames
-    :rtype: list
+    :rtype: List[Path]
     """
     files = [
         path for path in Path(source).glob('**/*')
@@ -58,10 +58,11 @@ def extract_from_files(
         languages: Dict[str, str]) -> DataSet:
     """Extract arrays of features from the given files.
 
-    :param list files: list of filenames
-    :param dict languages: language name => associated file extension list
+    :param List[Path] files: list of paths
+    :param Dict[str,str] languages: language name =>
+        associated file extension list
     :return: features
-    :rtype: tuple
+    :rtype: Tuple[Sequence[Sequence[float]], Sequence[int]]
     """
     enumerator = enumerate(sorted(languages.items()))
     rank_map = {ext: rank for rank, (_, exts) in enumerator for ext in exts}

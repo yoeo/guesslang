@@ -5,7 +5,7 @@ import logging
 from operator import itemgetter
 from math import ceil, log
 from pathlib import Path
-from typing import cast, List, Tuple, Dict, Iterator, Any, Callable, Optional
+from typing import List, Tuple, Dict, Iterator, Any, Callable, Optional
 
 import tensorflow as tf
 
@@ -30,20 +30,20 @@ ACCURACY_THRESHOLDS = [60, 90, 99]
 class Guess:
     """Guess the programming language of a source code.
 
-    :param str model_dir: Guesslang machine learning model directory.
+    :param Optional[str] model_dir: Guesslang machine learning model directory.
     """
 
     def __init__(self, model_dir: Optional[str] = None) -> None:
         model_data = model_info(model_dir)
 
         #: `tensorflow` model directory
-        self.model_dir = model_data[0]
+        self.model_dir: str = model_data[0]
 
         #: tells if current model is the default model
-        self.is_default = model_data[1]
+        self.is_default: bool = model_data[1]
 
         #: supported languages with associated extensions
-        self.languages = config_dict('languages.json')
+        self.languages: Dict[str, str] = config_dict('languages.json')
 
         n_classes = len(self.languages)
         feature_columns = [
@@ -67,10 +67,10 @@ class Guess:
         """
         values = extract(text)
         input_fn = _to_func(([values], []))
-        pos = next(self._classifier.predict_classes(input_fn=input_fn))
+        pos: int = next(self._classifier.predict_classes(input_fn=input_fn))
 
         LOGGER.debug("Predicted language position %s", pos)
-        return cast(str, sorted(self.languages)[pos])
+        return sorted(self.languages)[pos]
 
     def scores(self, text: str) -> Dict[str, float]:
         """A score for each language corresponding to the probability that
@@ -79,7 +79,7 @@ class Guess:
 
         :param str text: source code.
         :return: language to score dictionary
-        :rtype: dict
+        :rtype: Dict[str, float]
         """
         values = extract(text)
         input_fn = _to_func(([values], []))
@@ -98,7 +98,7 @@ class Guess:
         :param str text: source code.
         :param int max_languages: maximum number of listed languages.
         :return: languages list
-        :rtype: tuple
+        :rtype: Tuple[str, ...]
         """
         scores = self.scores(text)
 
@@ -172,7 +172,7 @@ class Guess:
 
         :param str input_dir: source code files directory.
         :return: test report
-        :rtype: dict
+        :rtype: Dict[str, Any]
         """
         report: Dict[str, Any] = {
             'overall-accuracy': 0,
