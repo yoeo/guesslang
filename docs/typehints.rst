@@ -125,7 +125,12 @@ All Python classes can be used as types for type hints:
 
   x: int = 3
   y: float = 4
-  x = y  # Not valid: should not set a "float" value in an "int" variable
+
+  x = y
+  # ERROR: Incompatible types in assignment
+  #   (expression has type "float", variable has type "int")
+  #
+  # -> should not set a "float" value in an "int" variable
 
 Container types
 ~~~~~~~~~~~~~~~
@@ -138,7 +143,9 @@ Like container classes ``list``, ``dict``, ``set``, etc...
 
   x: list = [1, 2, 3]
   y: list = ['a', 'b', 'c']
-  y[0] = x[0]  # Valid: both are lists of "something", but too permissive
+
+  y[0] = x[0]
+  # OK: both are lists of "something", but too permissive!
 
 For better type checking, it is required to define the type of
 the contained objects.
@@ -155,7 +162,12 @@ The previous code will then become:
 
   x: List[int] = [1, 2, 3]
   y: List[str] = ['a', 'b', 'c']
-  y[0] = x[0]  # Not valid: the content types are not the same "int" != "str"
+
+  y[0] = x[0]
+  # ERROR: No overload variant of "__setitem__" of "list"
+  #   matches argument types "int", "int"
+  #
+  # -> the content types are not the same "int" != "str"
 
 `Typing library <https://docs.python.org/3/library/typing.html>`_
 defined types for a large range of containers including:
@@ -182,8 +194,11 @@ or when we don't really care about the type of a given variable.
   y: Any = None
   z: int = 0
 
-  y = x  # Valid: "Any" can be anything
-  z = x  # Valid: "Any" can be anything
+  y = x
+  # OK: "Any" can be anything
+
+  z = x
+  # OK: "Any" can be anything
 
 As shown in the last line ``z = x``, ``Any`` should be used with care
 to avoid hiding mismatched types errors.
@@ -319,8 +334,9 @@ NoReturn type
       raise RuntimeError(message)
 
   x = fail("an error")
-  # error: Need type annotation for 'x'
-  #   in fact, 'x' variable cannot receive a value from a function
+  # ERROR: Need type annotation for 'x'
+  #
+  # -> in fact, 'x' variable cannot receive a value from a function
   #   that returns nothing
 
 Object oriented programming support
@@ -349,7 +365,7 @@ This attribute should not be used as an instance attribute.
   bot = Robot()
 
   bot.kill_switch = True
-  # error: Cannot assign to class variable "kill_switch" via instance
+  # ERROR: Cannot assign to class variable "kill_switch" via instance
 
 TypeVar: type variables
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -374,10 +390,10 @@ Type variables are placeholders for actual types.
 
 
   digit: int = middle([1, 2, 3])
-  # ok: 'Item' type variable is replaced by 'int'
+  # OK: "Item" type variable is replaced by "int"
 
   letter: str = middle(['a', 'b', 'c'])
-  # ok: 'Item' type variable is replaced by 'str'
+  # OK: "Item" type variable is replaced by "str"
 
 Type variables can be restricted to certain types:
 ``TypeVarT = TypeVar('TypeVarT', TypeX, TypeY, ...)``
@@ -398,13 +414,13 @@ In this case only the listed types can replace the type variable.
 
 
   x: float = safe_div(2, 3)
-  # ok: "Number" type variable is replaced by "int"
+  # OK: "Number" type variable is replaced by "int"
 
   y: float = safe_div(9.1, 0.0)
-  # ok: "Number" type variable is replaced by "float"
+  # OK: "Number" type variable is replaced by "float"
 
   z: float = safe_div('many', 'some')
-  # error: Value of type variable "Number" of "safe_div" cannot be "str"
+  # ERROR: Value of type variable "Number" of "safe_div" cannot be "str"
 
 Restricted type variables looks a lot like unions but with one catch.
 The type variable is replaced by only one type,
@@ -431,16 +447,17 @@ when union can take any type:
 
 
   a: int = size_1('long', 'story')
-  # valid: the function arguments have the same type "str"
+  # OK: the function arguments have the same type "str"
 
   b: int = size_1('long', b'story')
-  # error: Value of type variable "T" of "size_1" cannot be "object"
-  #   in fact the function arguments are "str" and "bytes" that have a common
+  # ERROR: Value of type variable "T" of "size_1" cannot be "object"
+  #
+  # -> in fact the function arguments are "str" and "bytes" that have a common
   #   base class "object".
   #   But "object" is not a valid type for the type variable "T"
 
   c: int = size_2('long', b'story')
-  # valid: unlike "size_1", here the function arguments can have different types
+  # OK: unlike "size_1", here the function arguments can have different types
   #   "str" and "bytes". These types matches "Union[int, float, str]".
 
 TypeVar: type bounds
@@ -477,8 +494,8 @@ are:
   try:
       raise SeriousError("alert!")
   except SeriousError as error:
-      print_error(error)  # prints: SERIOUS: alert
-      # valid: "SeriousError" is a derived class of "Exception"
+      print_error(error)  # prints «SERIOUS: alert»
+      # OK: "SeriousError" is a derived class of "Exception"
 
 Type: add type hints to actual types
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -493,7 +510,7 @@ when it holds a class: ``Type[TypeX]``.
 
 
   boolean: Type[bool] = bool
-  # valid: "bool" class has the type "Type(bool)"
+  # OK: "bool" class has the type "Type(bool)"
 
 This is pertucularly usefull when associated with type variables:
 
@@ -511,14 +528,15 @@ This is pertucularly usefull when associated with type variables:
 
 
   boolean_false: bool = empty(bool)
-  # valid: the function parameter type is "type(bool)" and it returns a "bool"
+  # OK: the function parameter type is "type(bool)" and it returns a "bool"
 
   number_zero: int = empty(int)
-  # valid: the function parameter type is "type(int)" and it returns an "int"
+  # OK: the function parameter type is "type(int)" and it returns an "int"
 
   empty_string: str = empty(str)
-  # error: Value of type variable "T" of "empty" cannot be "str"
-  #   Here, the only accepted types are "bool" and "int"
+  # ERROR: Value of type variable "T" of "empty" cannot be "str"
+  #
+  # -> Here, the only accepted types are "bool" and "int"
 
 @overload: function overloading
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -551,16 +569,16 @@ that are available for the function:
 
 
   print(dotted(1, 234, 567))
-  # valid: matches method variant "def dotted(*values: int) -> str"
+  # OK: matches method variant "def dotted(*values: int) -> str"
 
   print(dotted('you', 'shall', 'not', 'pass'))
-  # valid: matches method variant "def dotted(*values: str) -> str"
+  # OK: matches method variant "def dotted(*values: str) -> str"
 
   print(dotted(b'hello'))
-  # error: No overload variant of "dotted" matches argument type "bytes"
-  # note: Possible overload variants:
-  # note:     def dotted(*values: int) -> str
-  # note:     def dotted(*values: str) -> str
+  # ERROR: No overload variant of "dotted" matches argument type "bytes"
+  #   Possible overload variants:
+  #      def dotted(*values: int) -> str
+  #      def dotted(*values: str) -> str
 
 Generic: generic types
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -614,20 +632,20 @@ Generic types are defined using the type: ``Generic[TypeVarT, TypeVarU,...]``.
 
   hash_task: Task[str, int] = Task(text_hash)
   result: int = hash_task.run("gold diggers diggin' until they find oil")
-  # valid: creates a variant of "Task" where
+  # OK: creates a variant of "Task" where
   #   - "Param" type variable is "str" and
   #   - "Result" type variable is "int"
 
   triple_task: Task[List[int], List[int]] = Task(triple)
   values: List[int] = triple_task.run([1, 2, 3])
-  # valid: creates a variant of "Task" where
+  # OK: creates a variant of "Task" where
   #   - "Param" and "Result" type variables are both "List[int]"
 
   loop_task: Task[[], NoReturn] = Task(loop_forever)
-  # error: Argument 1 to "Task" has incompatible type Callable[[], NoReturn]";
+  # ERROR: Argument 1 to "Task" has incompatible type Callable[[], NoReturn]";
   #   expected "Callable[[Any], Any]"
   #
-  # There is no type that matches "Param" type variable
+  # -> There is no type that matches "Param" type variable
 
 When there is an ambiguity about which types must replace the generic type
 type variable, a variant of the generic type can be explicitly instantiated:
@@ -654,21 +672,23 @@ type variable, a variant of the generic type can be explicitly instantiated:
 
 
   store_x = Store[str]()
-  # valid: the variant of "Store[...]" where "Item" is replaced by "str" type
+  # OK: the variant of "Store[...]" where "Item" is replaced by "str" type
   #   is explicitly used
+
   store_x.set('javascript')
   x: Optional[str] = store_x.get()
 
   store_y: Store[int] = Store()
-  # valid: from the variable type "Store[int]", the type checker guesses that
+  # OK: from the variable type "Store[int]", the type checker guesses that
   #   the variant "Store[int]" of "Store[...]" generic type is used here
+
   store_y.set(3)
   y: Optional[int] = store_y.get()
 
   store_z = Store()
-  # error: Need type annotation for "store_z"
+  # ERROR: Need type annotation for "store_z"
   #
-  # there is no type information that the type checker can use to determine
+  # ->there is no type information that the type checker can use to determine
   #   which type replaces the type variable "Item"
 
 
@@ -687,14 +707,14 @@ Generic types can be partially defined using type aliases:
   #   while "Value" remains a type variable (renamed "T")
 
   a: StrDict[int] = {'a': 1}
-  # valid: "StrDict[int]" is in fact "Dict[str, int]".
+  # OK: "StrDict[int]" is in fact "Dict[str, int]".
   #   And "Dict[str, int]" matches the value type
 
   b: StrDict[bool] = {'b': 1.2}
-  # error: Dict entry 0 has incompatible type "str": "int";
+  # ERROR: Dict entry 0 has incompatible type "str": "int";
   #   expected "str": "bool"
   #
-  # the defined type "StrDict[bool]" is in fact "Dict[str, bool]"
+  # -> the defined type "StrDict[bool]" is in fact "Dict[str, bool]"
   #   but "Dict[str, bool]" doesn't match the value type "Dict[str, float]"
 
 More advanced usages of generic types are described in
@@ -723,11 +743,11 @@ that ``Container[Parent]`` and ``Container[Child]`` have:
 
 
   x: Container[Parent] = Container[Child]()
-  # error: Incompatible types in assignment (
+  # ERROR: Incompatible types in assignment (
   #   expression has type "Container[Child]",
   #   variable has type "Container[Parent]")
   #
-  # "T" is invariant:
+  # -> "T" is invariant:
   #   no special relation between "Container[Parent]" and "Container[Child]"
 
 In the example above ``Container[Parent]`` and ``Container[Child]``
@@ -752,7 +772,7 @@ the type variable ``T`` must be **covariant**:
 
 
   x: Container[Parent] = Container[Child]()
-  # valid: "T" is covariant:
+  # OK: "T" is covariant:
   #   "Container[Parent]" is then a base class of "Container[Child]"
 
 To reverse the sub-typing relation,
@@ -773,7 +793,7 @@ the type variable ``T`` must be **contravariant**:
 
 
   x: Container[Child] = Container[Parent]()
-  # valid: "T" is contravariant:
+  # OK: "T" is contravariant:
   #   "Container[Child]" is then a base class of "Container[Parent]"
 
 Here is a full fledged example that demonstrate the variance of type variables.
@@ -808,7 +828,7 @@ In this example a plug-in system is defined:
   BasePlugIn ──┬──> LowerPlugIn ──┬──> SecurePlugIn
                ├──> TitlePlugIn ──┘
                │
-               └──> EvalPlugIn
+               └──> EvalPlugIn (not secure)
   """
 
 
@@ -829,7 +849,8 @@ In this example a plug-in system is defined:
 
   class EvalPlugIn(BasePlugIn):
       def execute(self, data: str) -> str:
-          # evaluation of user data, not really secure...
+          # evaluation of data provided by the user
+          # without error handling: NOT SAFE
           return str(literal_eval(data))
 
 
@@ -863,31 +884,32 @@ In this example a plug-in system is defined:
 
 
   sandbox: PlugInSandbox[TitlePlugIn] = PlugInSandbox[TitlePlugIn](title_plugin)
-  # valid: value and variable have the same type: "PlugInSandbox[TitlePlugIn]"
+  # OK: value and variable have the same type: "PlugInSandbox[TitlePlugIn]"
+
   with sandbox.sandboxed() as safe_plugin:
       sandboxed_execution_result = safe_plugin.execute('here we go')
       print(sandboxed_execution_result)
-      # Prints:
+      # prints:
       #   [Sandbox ON]
       #   Here We Go
       #   [Sandbox OFF]
 
   base_sandbox: PlugInSandbox[BasePlugIn] = PlugInSandbox[TitlePlugIn](
       title_plugin)
-  # error: Incompatible types in assignment (
+  # ERROR: Incompatible types in assignment (
   #   expression has type "PlugInSandbox[TitlePlugIn]",
   #   variable has type "PlugInSandbox[BasePlugIn]")
   #
-  # "Container[Parent]" -> "Container[Child]" type conversions are only valid
+  # -> "Container[Parent]" to "Container[Child]" type conversions are only valid
   #   for *contravariant* type variables. But here "T" type variable is invariant
 
   secure_sandbox: PlugInSandbox[SecurePlugIn] = PlugInSandbox[TitlePlugIn](
       title_plugin)
-  # error: Incompatible types in assignment (
+  # ERROR: Incompatible types in assignment (
   #   expression has type "PlugInSandbox[TitlePlugIn]",
   #   variable has type "PlugInSandbox[SecurePlugIn]")
   #
-  # "Container[Child]" -> "Container[Parent]" type conversions are only valid
+  # -> "Container[Child]" to "Container[Parent]" type conversions are only valid
   #   for *covariant* type variables. But here "T" type variable is invariant
 
 
@@ -908,24 +930,26 @@ In this example a plug-in system is defined:
 
 
   info: PlugInInfo[TitlePlugIn] = PlugInInfo[TitlePlugIn](title_plugin)
-  # valid: value and variable have the same type: "PlugInInfo[TitlePlugIn]"
+  # OK: value and variable have the same type: "PlugInInfo[TitlePlugIn]"
+
   plugin_name = info.name()
-  print(plugin_name)  # Prints: TitlePlugIn
+  print(plugin_name)  # prints «TitlePlugIn»
 
   base_info: PlugInInfo[BasePlugIn] = PlugInInfo[TitlePlugIn](title_plugin)
-  # valid: "U" is covariant, therefore:
-  #   "Container[Child]" -> "Container[Parent]" type conversions are valid
+  # OK: "U" is covariant, therefore:
+  #   "Container[Child]" to "Container[Parent]" type conversions are valid
+
   base_plugin_name = base_info.name()
-  print(base_plugin_name)  # Prints: TitlePlugIn
-  # note: the type conversion doesn't affect the plug-in runtime class
+  print(base_plugin_name)  # «TitlePlugIn»
+  # Note that the type conversion doesn't affect the plug-in runtime class
   #   that remains "TitlePlugIn"
 
   secure_info: PlugInInfo[SecurePlugIn] = PlugInInfo[TitlePlugIn](title_plugin)
-  # error: Incompatible types in assignment (
+  # ERROR: Incompatible types in assignment (
   #   expression has type "PlugInInfo[TitlePlugIn]",
   #   variable has type "PlugInInfo[SecurePlugIn]")
   #
-  # "Container[Parent]" -> "Container[Child]" type conversions are only valid
+  # -> "Container[Parent]" to "Container[Child]" type conversions are only valid
   #   for *contravariant* type variables. But here "U" type variable is covariant
 
 
@@ -946,24 +970,26 @@ In this example a plug-in system is defined:
 
 
   manager: PlugInManager[TitlePlugIn] = PlugInManager[TitlePlugIn](title_plugin)
-  # valid: value and variable have the same type: "PlugInManager[TitlePlugIn]"
+  # OK: value and variable have the same type: "PlugInManager[TitlePlugIn]"
+
   if manager.is_available():
       message = manager.plugin.execute("hip hip hooray")
-      print(message)  # Prints: Hip Hip Hooray
+      print(message)  # prints «Hip Hip Hooray»
 
   base_manager: PlugInManager[BasePlugIn] = PlugInManager[TitlePlugIn]()
-  # error: Incompatible types in assignment (
+  # ERROR: Incompatible types in assignment (
   #   expression has type "PlugInManager[TitlePlugIn]",
   #   variable has type "PlugInManager[BasePlugIn]")
   #
-  # "Container[Child]" -> "Container[Parent]" type conversions are only valid
+  # -> "Container[Child]" to "Container[Parent]" type conversions are only valid
   #   for *covariant* type variables. But here "V" type variable is contravariant
 
   secure_manager: PlugInManager[SecurePlugIn] = PlugInManager[TitlePlugIn]()
-  # valid: "V" is contravariant, therefore:
-  #   "Container[Parent]" -> "Container[Child]" type conversions are valid
+  # OK: "V" is contravariant, therefore:
+  #   "Container[Parent]" to "Container[Child]" type conversions are valid
+
   if not secure_manager.is_available():
-      print("exiting...")  # Prints: exiting...
+      print("exiting...")  # prints «exiting...»
 
 Other features
 ^^^^^^^^^^^^^^
@@ -987,15 +1013,15 @@ change the type of the variable using ``cast(TypeX, variable)`` method.
   x: List[int] = [0, 1]
 
   y: List[float] = x
-  # error: Incompatible types in assignment (
+  # ERROR: Incompatible types in assignment (
   #   expression has type "List[int]",
   #   variable has type "List[float]")
   #
-  # the conversion from "List[float]" to "List[int]" is not implicit
+  # -> the conversion from "List[float]" to "List[int]" is not implicit
   #   even if "int" can be implicitly converted to "float"
 
   z: List[float] = cast(List[float], x)
-  # valid: we explicitly convert "List[int]" into "List[float]"
+  # OK: we explicitly convert "List[int]" into "List[float]"
 
 If the goal is to convert a value (change the run-time class of value),
 you should convert the variable instead of casting its static type.
@@ -1009,11 +1035,11 @@ In fact the static type casting doesn't actually change the variable class:
 
   message: str = "SUCCESS"
   status_code: int = cast(int, message)
-  # valid: "status_code" static type have been converted from "str" to "int"
-  #   *but* "status_code" class is "str", like "message".
+  # OK: "status_code" static type have been converted from "str" to "int"
+  #   BUT "status_code" class is "str", like "message".
   #   Python objects run-time classes are not affected by static type casting.
 
-  print(status_code)  # prints: SUCCESS
+  print(status_code)  # prints «SUCCESS»
 
 Classes to hold data: NamedTuple, @dataclass
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1046,14 +1072,14 @@ Here is an example using ``@dataclass``:
       color: str = 'blue'
 
   broken_voxel: Voxel = Voxel(1.0, -2, 3)
-  # error: Argument 1 to "Voxel" has incompatible type "float"; expected "int"
+  # ERROR: Argument 1 to "Voxel" has incompatible type "float"; expected "int"
   #
-  # the first argument "x" has the wrong type: "float" instead of "int"
+  # -> the first argument "x" has the wrong type: "float" instead of "int"
 
   voxel: Voxel = Voxel(1, -2, 3)
-  # valid: all the arguments have the right type
+  # OK: all the arguments have the right type
 
-  print(voxel)  # prints: Voxel(x=1, y=-2, z=3, color='blue')
+  print(voxel)  # prints «Voxel(x=1, y=-2, z=3, color='blue')»
 
 Type definition with forward references
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1085,6 +1111,28 @@ this type name must be written as a string:
   head: Chain = Chain(1, Chain(2, Chain(3)))
   last_value: int = head.next.next.value
   print(last_value)  # prints: 3
+
+In Python 4, forward references will be supported by default
+thanks to the «Postponed Evaluation of Annotations» feature introduced by the
+`PEP 563 <https://www.python.org/dev/peps/pep-0563/#enabling-the-future-behavior-in-python-3-7`_.
+It will no longer be required to write type names as strings.
+
+This feature can be used today on Python 3.7 with the following import:
+``from __future__ import annotations``
+
+.. code-block:: python
+  :linenos:
+
+  from __future__ import annotations
+
+  from typing import Optional
+
+
+  class Chain:
+      # "Chain" type can now be used in type annotations
+
+      def __init__(self, value: int, next: Optional[Chain] = None) -> None:
+          pass
 
 How to add static types to Guesslang source code?
 -------------------------------------------------
@@ -1135,16 +1183,18 @@ to the following kind of definitions:
 * Ambiguous variable definition
 
 In addition to that, the added type hints should be readable and concise...
-because *we are not programming in C++ :-)*:
+because *this is not C++* 😛
 
 .. code-block:: c++
   :linenos:
 
-  // a function type definition that is not really concise...
+  // The kind of long C++ function types
+  //  that I would like to avoid in my Python function definitions
+  //  (but I still love C++)
   static inline std::map<std::string, int> zip_and_map(
       std::list<std::string> keys,
       std::list<int> values) {
-    // map keys zipped with values
+    ...
   }
 
 Setting up the static checker
@@ -1268,9 +1318,8 @@ The type hints for this method are then:
       """Learn languages features from source files.
 
       :raise GuesslangError: when the default model is used for learning
-      :param str input_dir: source code files directory.
+      :param input_dir: source code files directory.
       :return: learning accuracy
-      :rtype: float
       """
       ...
       return accuracy
@@ -1396,7 +1445,7 @@ The closest definition of ``JsonObject`` would be:
       List['JsonObject'],
       Dict[str, 'JsonObject']
   ]
-  # error: Recursive types not fully supported yet,
+  # ERROR: Recursive types not fully supported yet,
   #   nested types replaced with "Any"
   #
   # "JsonValue" type alias cannot have a reference to itself
