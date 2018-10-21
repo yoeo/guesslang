@@ -63,7 +63,7 @@ that pretty pastes source code.
 
 ## Installation
 
-* Python 3.5+ is required
+* Python 3.6+ is required
 
 * Install the latest stable version:
 
