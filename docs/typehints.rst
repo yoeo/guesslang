@@ -1114,7 +1114,7 @@ this type name must be written as a string:
 
 In Python 4, forward references will be supported by default
 thanks to the «Postponed Evaluation of Annotations» feature introduced by the
-`PEP 563 <https://www.python.org/dev/peps/pep-0563/#enabling-the-future-behavior-in-python-3-7`_.
+`PEP 563 <https://www.python.org/dev/peps/pep-0563/#enabling-the-future-behavior-in-python-3-7>`_.
 It will no longer be required to write type names as strings.
 
 This feature can be used today on Python 3.7 with the following import:
