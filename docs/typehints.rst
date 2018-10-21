@@ -39,7 +39,7 @@ A simple statements with type hints:
 Benefits of type hints
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The cummulated benefits of type hints are:
+The overall benefits of type hints are:
 
 * Being able to run type checkers, and **statically validate Python code**.
 * Write code that can be easily understood and **maintained**.
@@ -49,7 +49,7 @@ The cummulated benefits of type hints are:
   ex: `PyCharm <https://www.jetbrains.com/help/pycharm/type-hinting-in-product.html>`_
 
 Type hints are by nature **optional**.
-Adding or removing one or multiple type hints should not change the behaviour
+Adding or removing one or multiple type hints should not change the behavior
 of a Python program.
 
 How to use type hints?
@@ -108,7 +108,7 @@ You can see the difference in the following example:
 Like the Schrödinger's cat, the ``even`` function return type is
 both ``str`` or ``NoneType``. This composed type is written ``Optional[str]``.
 
-On the other hand, during the runtime the class of the returned variable
+On the other hand, during the run-time the class of the returned variable
 is not ``Optional[str]`` but either ``str`` or ``NoneType``.
 
 Values types
@@ -142,7 +142,7 @@ Like container classes ``list``, ``dict``, ``set``, etc...
 
 For better type checking, it is required to define the type of
 the contained objects.
-This is done using predefined types availaple in
+This is done using predefined types available in
 `typing standard library <https://docs.python.org/3/library/typing.html>`_.
 
 The previous code will then become:
@@ -630,7 +630,7 @@ Generic types are defined using the type: ``Generic[TypeVarT, TypeVarU,...]``.
   # There is no type that matches "Param" type variable
 
 When there is an ambiguity about which types must replace the generic type
-type variable, a variant of the generic type can be explicitly instanciated:
+type variable, a variant of the generic type can be explicitly instantiated:
 
 .. code-block:: python
   :linenos:
@@ -704,9 +704,9 @@ Variance: invariant, covariant and contravariant
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Let's consider two types ``Parent`` and ``Child``
-that have a subtyping relation, and a composed type ``Container[T]``.
+that have a sub-typing relation, and a composed type ``Container[T]``.
 
-The variance refers to the kind of subtyping relation
+The variance refers to the kind of sub-typing relation
 that ``Container[Parent]`` and ``Container[Child]`` have:
 
 .. code-block:: python
@@ -734,7 +734,7 @@ In the example above ``Container[Parent]`` and ``Container[Child]``
 have no special relation, because the type variable ``T`` is **invariant**
 by default.
 
-To replicate the subtyping relation,
+To replicate the sub-typing relation,
 make ``Container[Parent]`` the base class of ``Container[Child]``,
 the type variable ``T`` must be **covariant**:
 
@@ -755,7 +755,7 @@ the type variable ``T`` must be **covariant**:
   # valid: "T" is covariant:
   #   "Container[Parent]" is then a base class of "Container[Child]"
 
-To reverse the subtyping relation,
+To reverse the sub-typing relation,
 make ``Container[Child]`` the base class of ``Container[Parent]``,
 the type variable ``T`` must be **contravariant**:
 
@@ -991,13 +991,13 @@ change the type of the variable using ``cast(TypeX, variable)`` method.
   #   expression has type "List[int]",
   #   variable has type "List[float]")
   #
-  # the convertion from "List[float]" to "List[int]" is not implicit
+  # the conversion from "List[float]" to "List[int]" is not implicit
   #   even if "int" can be implicitly converted to "float"
 
   z: List[float] = cast(List[float], x)
   # valid: we explicitly convert "List[int]" into "List[float]"
 
-If the goal is to convert a value (change the runtime class of value),
+If the goal is to convert a value (change the run-time class of value),
 you should convert the variable instead of casting its static type.
 In fact the static type casting doesn't actually change the variable class:
 
@@ -1011,7 +1011,7 @@ In fact the static type casting doesn't actually change the variable class:
   status_code: int = cast(int, message)
   # valid: "status_code" static type have been converted from "str" to "int"
   #   *but* "status_code" class is "str", like "message".
-  #   Python objects runtime classes are not affected by static type casting.
+  #   Python objects run-time classes are not affected by static type casting.
 
   print(status_code)  # prints: SUCCESS
 
@@ -1089,7 +1089,7 @@ this type name must be written as a string:
 How to add static types to Guesslang source code?
 -------------------------------------------------
 
-Now let's put all that into pratice by adding type hints to Guesslang package.
+Now let's put all that into practice by adding type hints to Guesslang package.
 
 Current status
 ^^^^^^^^^^^^^^
@@ -1166,7 +1166,7 @@ as well as third party packages, Mypy uses
 `Typeshed package <https://github.com/python/typeshed/>`_.
 
 Typeshed is a collection of type annotations for Python standard library,
-builtins and some third party packages.
+``builtins`` and some third party packages.
 
 You can install Mypy with the following command:
 
@@ -1178,8 +1178,8 @@ You can install Mypy with the following command:
 Running the checker
 ^^^^^^^^^^^^^^^^^^^
 
-Run statical type checking
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Run static type checking
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 The type checker is executed with the command line bellow:
 
@@ -1238,7 +1238,7 @@ Guess methods types from Guesslang documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In fact most of Guesslang methods are documented.
-The arguments and return types are detailled in the documentation.
+The arguments and return types are detailed in the documentation.
 We just have to reuse them as type hints.
 
 For example:
@@ -1336,7 +1336,7 @@ Like:
       ...
 
 * A really long type that have been replaced by an alias
-  to avoid overcomplicated type hints:
+  to avoid over-complicated type hints:
 
 .. code-block:: python
   :linenos:
@@ -1404,7 +1404,7 @@ The closest definition of ``JsonObject`` would be:
 
   value: JsonValue = json.loads('{"a": null}')
 
-Unfortunately it is not yet possible to define reccursive type aliases.
+Unfortunately it is not yet possible to define recursive type aliases.
 As a workaround, the ``JsonObject`` is defined
 by ``Dict[str, Any]`` in Guesslang:
 
@@ -1443,20 +1443,20 @@ on the project:
 
 * The source code is easier to read and understand.
 * The project is statically type checked now.
-  The type checking is now part of the continious integration.
-* The code is more consistant now. It is easier to see where an argument
+  The type checking is now part of the continuous integration.
+* The code is more consistent now. It is easier to see where an argument
   with a wrong type is sent to a function:
   there where a mix-up between ``list`` and ``type`` that have been fixed
   thanks to the type checking.
 * The documentation is easier to write, no need to add type information in
-  the doctring.
-* The generated documentation is more detailled.
+  the doc-string.
+* The generated documentation is more detailed.
 
 On the over hand:
 
 * The new type checking didn't uncover new bugs (just little improvements).
   It only shows that tests are more suitable than type checking to find bugs.
-* Few tweeks where required to fix all the type checking issues.
+* Few tweaks where required to fix all the type checking issues.
   In most cases setting the variable type, casting (``cast``) and
   using the ``Any`` type where enough to solve the most complex issues.
 
