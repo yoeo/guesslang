@@ -4,6 +4,9 @@ Adding type hints
 .. toctree::
    :maxdepth: 2
 
+.. contents::
+  :local:
+
 Why use type hints?
 -------------------
 
@@ -159,7 +162,8 @@ defined types for a large range of containers including:
 ``List``, ``Set``, ``Dict`` and others.
 
 It also gives access to abstract classes described in the
-`collections.abc standard library <https://docs.python.org/3/library/collections.abc.html#collections-abstract-base-classes>`_ like ``Iterator``, ``Iterable``, ``Mapping``, ``Coroutine``, etc...
+`collections.abc standard library <https://docs.python.org/3/library/collections.abc.html#collections-abstract-base-classes>`_
+like ``Iterator``, ``Iterable``, ``Mapping``, ``Coroutine``, etc...
 
 Any type
 ~~~~~~~~
@@ -314,17 +318,396 @@ NoReturn type
   def fail(message: str) -> NoReturn:
       raise RuntimeError(message)
 
+  x = fail("an error")
+  # error: Need type annotation for 'x'
+  #   in fact, 'x' variable cannot receive a value from a function
+  #   that returns nothing
+
 Object oriented programming support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Type hints support most of the modern object oriented programming features,
 like:
 
-* Class variable restriction
-* Type variables.
-* Generic classes (known as templates in some languages).
-* Method overloading.
-* Covariance and contravariance.
+ClassVar: class variable type
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``ClassVar`` type is used to specify that a class attribute
+is a class variable.
+This attribute should not be used as an instance attribute.
+
+.. code-block:: python
+  :linenos:
+
+  from typing import ClassVar
+
+
+  class Robot:
+      kill_switch: ClassVar[bool] = False
+
+
+  bot = Robot()
+
+  bot.kill_switch = True
+  # error: Cannot assign to class variable "kill_switch" via instance
+
+TypeVar: type variables
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Type variables are one of the base feature of abstract programming:
+``TypeVarT = TypeVar('TypeVarT')``
+
+Type variables are placeholders for actual types.
+
+.. code-block:: python
+  :linenos:
+
+  from typing import TypeVar
+
+
+  Item = TypeVar('ItemType')
+
+
+  def middle(items: List[Item]) -> Item:
+      pos = int(len(items) / 2)
+      return items[pos]
+
+
+  digit: int = middle([1, 2, 3])
+  # ok: 'Item' type variable is replaced by 'int'
+
+  letter: str = middle(['a', 'b', 'c'])
+  # ok: 'Item' type variable is replaced by 'str'
+
+Type variables can be restricted to certain types:
+``TypeVarT = TypeVar('TypeVarT', TypeX, TypeY, ...)``
+
+In this case only the listed types can replace the type variable.
+
+.. code-block:: python
+  :linenos:
+
+  from typing import TypeVar
+
+
+  Number = TypeVar('Number', int, float)
+
+
+  def safe_div(dividend: Number, divisor: Number) -> float:
+      return float('nan') if divisor == 0 else dividend / divisor
+
+
+  x: float = safe_div(2, 3)
+  # ok: "Number" type variable is replaced by "int"
+
+  y: float = safe_div(9.1, 0.0)
+  # ok: "Number" type variable is replaced by "float"
+
+  z: float = safe_div('many', 'some')
+  # error: Value of type variable "Number" of "safe_div" cannot be "str"
+
+Restricted type variables looks a lot like unions but with one catch.
+The type variable is replaced by only one type,
+when union can take any type:
+
+.. code-block:: python
+  :linenos:
+
+  from typing import Union, TypeVar
+
+
+  T = TypeVar('T', bytes, str)
+  U = Union[bytes, str]
+
+
+  # The function arguments "first" and "second" must have the same type
+  def size_1(first: T, second: T) -> int:
+      return len(first) + len(second)
+
+
+  # The function arguments "first" and "second" can have different types
+  def size_2(first: U, second: U) -> int:
+      return len(first) + len(second)
+
+
+  a: int = size_1('long', 'story')
+  # valid: the function arguments have the same type "str"
+
+  b: int = size_1('long', b'story')
+  # error: Value of type variable "T" of "size_1" cannot be "object"
+  #   in fact the function arguments are "str" and "bytes" that have a common
+  #   base class "object".
+  #   But "object" is not a valid type for the type variable "T"
+
+  c: int = size_2('long', b'story')
+  # valid: unlike "size_1", here the function arguments can have different types
+  #   "str" and "bytes". These types matches "Union[int, float, str]".
+
+TypeVar: type bounds
+~~~~~~~~~~~~~~~~~~~~
+
+Type variables can be bound to a given type:
+``TypeVarT = TypeVar('TypeVarT', bound=TypeX)``
+
+Here the types that can replace the type variable ``TypeVarT``
+are:
+* The bound type ``TypeX``
+* All ``TypeX`` derived classes (child-classes)
+
+.. code-block:: python
+  :linenos:
+
+  from typing import TypeVar
+
+
+  class SeriousError(Exception):
+      def __init__(self, message: str) -> None:
+          super().__init__('SERIOUS', message)
+
+
+  # "T" can be "Exception" or any of its derived classes
+  T = TypeVar('T', bound=Exception)
+
+
+  def print_error(exception: T) -> None:
+      text = ': '.join(exception.args)
+      print(text)
+
+
+  try:
+      raise SeriousError("alert!")
+  except SeriousError as error:
+      print_error(error)  # prints: SERIOUS: alert
+      # valid: "SeriousError" is a derived class of "Exception"
+
+Type: add type hints to actual types
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following type hints can be added to a variable definition
+when it holds a class: ``Type[TypeX]``.
+
+.. code-block:: python
+  :linenos:
+
+  from typing import Type
+
+
+  boolean: Type[bool] = bool
+  # valid: "bool" class has the type "Type(bool)"
+
+This is pertucularly usefull when associated with type variables:
+
+.. code-block:: python
+  :linenos:
+
+  from typing import TypeVar, Type
+
+
+  T = TypeVar('T', bool, int)
+
+
+  def empty(item_class: Type[T]) -> T:
+      return item_class()
+
+
+  boolean_false: bool = empty(bool)
+  # valid: the function parameter type is "type(bool)" and it returns a "bool"
+
+  number_zero: int = empty(int)
+  # valid: the function parameter type is "type(int)" and it returns an "int"
+
+  empty_string: str = empty(str)
+  # error: Value of type variable "T" of "empty" cannot be "str"
+  #   Here, the only accepted types are "bool" and "int"
+
+@overload: function overloading
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A generic method can be defined using ``@overload`` decorator.
+This decorator doesn't select which version of the function to call.
+It actually defines the different type combinations
+that are available for the function:
+
+.. code-block:: python
+  :linenos:
+
+  from typing import overload
+
+
+  @overload
+  def dotted(*values: int) -> str:
+    ...
+
+
+  @overload
+  def dotted(*values: str) -> str:
+    ...
+
+
+  # A "dotted" method without "@overload" must be defined
+  def dotted(*values):
+      text_values = [str(value) for value in values]
+      return '.'.join(text_values)
+
+
+  print(dotted(1, 234, 567))
+  # valid: matches method variant "def dotted(*values: int) -> str"
+
+  print(dotted('you', 'shall', 'not', 'pass'))
+  # valid: matches method variant "def dotted(*values: str) -> str"
+
+  print(dotted(b'hello'))
+  # error: No overload variant of "dotted" matches argument type "bytes"
+  # note: Possible overload variants:
+  # note:     def dotted(*values: int) -> str
+  # note:     def dotted(*values: str) -> str
+
+Generic: generic types
+~~~~~~~~~~~~~~~~~~~~~~
+
+Generic types are types that uses type variables.
+A variants of a generic class is defined by replacing the type variable
+with an actual type.
+
+For example:
+
+* ``List[...]`` is a generic type
+* ``List[int]`` is a variant of ``List[...]``
+  where the type variable is replaced by ``int``
+* ``List[str]`` is also a variant of ``List[...]``
+  and here the type variable is replaced by ``str``
+
+Generic types are defined using the type: ``Generic[TypeVarT, TypeVarU,...]``.
+
+.. code-block:: python
+  :linenos:
+
+  import time
+  from typing import Generic, TypeVar, List, NoReturn, Callable
+
+
+  Param = TypeVar('Param')
+  Result = TypeVar('Result')
+
+
+  # A generic class that runs a task
+  class Task(Generic[Param, Result]):
+      def __init__(self, function: Callable[[Param], Result]) -> None:
+          self.function = function
+
+      def run(self, param: Param) -> Result:
+          return self.function(param)
+
+
+  def text_hash(text: str) -> int:
+      return sum(ord(x) for x in text)
+
+
+  def triple(items: List[int]) -> List[int]:
+      return [item * 3 for item in items]
+
+
+  def loop_forever() -> NoReturn:
+      while True:
+          time.sleep(1)
+
+
+  hash_task: Task[str, int] = Task(text_hash)
+  result: int = hash_task.run("gold diggers diggin' until they find oil")
+  # valid: creates a variant of "Task" where
+  #   - "Param" type variable is "str" and
+  #   - "Result" type variable is "int"
+
+  triple_task: Task[List[int], List[int]] = Task(triple)
+  values: List[int] = triple_task.run([1, 2, 3])
+  # valid: creates a variant of "Task" where
+  #   - "Param" and "Result" type variables are both "List[int]"
+
+  loop_task: Task[[], NoReturn] = Task(loop_forever)
+  # error: Argument 1 to "Task" has incompatible type Callable[[], NoReturn]";
+  #   expected "Callable[[Any], Any]"
+  #
+  # There is no type that matches "Param" type variable
+
+When there is an ambiguity about which types must replace the generic type
+type variable, a variant of the generic type can be explicitly instanciated:
+
+.. code-block:: python
+  :linenos:
+
+  from typing import Generic, TypeVar, Optional
+
+
+  Item = TypeVar('Item')
+
+
+  # A generic class that runs a task
+  class Store(Generic[Item]):
+      def __init__(self) -> None:
+          self.item: Optional[Item] = None
+
+      def set(self, item: Item) -> None:
+          self.item = item
+
+      def get(self) -> Optional[Item]:
+          return self.item
+
+
+  store_x = Store[str]()
+  # valid: the variant of "Store[...]" where "Item" is replaced by "str" type
+  #   is explicitly used
+  store_x.set('javascript')
+  x: Optional[str] = store_x.get()
+
+  store_y: Store[int] = Store()
+  # valid: from the variable type "Store[int]", the type checker guesses that
+  #   the variant "Store[int]" of "Store[...]" generic type is used here
+  store_y.set(3)
+  y: Optional[int] = store_y.get()
+
+  store_z = Store()
+  # error: Need type annotation for "store_z"
+  #
+  # there is no type information that the type checker can use to determine
+  #   which type replaces the type variable "Item"
+
+
+Generic types can be partially defined using type aliases:
+
+.. code-block:: python
+  :linenos:
+
+  from typing import Dict, TypeVar
+
+
+  T = TypeVar('T')
+  StrDict = Dict[str, T]
+  # The generic type "Dict[Key, Value]" is partially defined:
+  #   the type variable "Key" is replaced by the type "str"
+  #   while "Value" remains a type variable (renamed "T")
+
+  a: StrDict[int] = {'a': 1}
+  # valid: "StrDict[int]" is in fact "Dict[str, int]".
+  #   And "Dict[str, int]" matches the value type
+
+  b: StrDict[bool] = {'b': 1.2}
+  # error: Dict entry 0 has incompatible type "str": "int";
+  #   expected "str": "bool"
+  #
+  # the defined type "StrDict[bool]" is in fact "Dict[str, bool]"
+  #   but "Dict[str, bool]" doesn't match the value type "Dict[str, float]"
+
+More advanced usages of generic types are described in
+`typing module documentation <https://docs.python.org/3/library/typing.html#user-defined-generic-types>`_.
+
+Variance: invariant, covariant and contravariant
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let's consider two types ``Parent`` and ``Child``
+that have a subtyping relation, and a composed type ``Container[T]``.
+
+The variance refers to the kind of subtyping relation
+that ``Container[Parent]`` and ``Container[Child]`` have:
 
 .. code-block:: python
   :linenos:
@@ -332,47 +715,381 @@ like:
   from typing import Generic, TypeVar
 
 
+  class Parent: pass
+  class Child(Parent): pass
+
   T = TypeVar('T')
-  R = TypeVar('R')
+  class Container(Generic[T]): pass
 
 
-  class Delayed(Generic[T, R]):
-      def __init__(self, param: T) -> None:
-          ...
+  x: Container[Parent] = Container[Child]()
+  # error: Incompatible types in assignment (
+  #   expression has type "Container[Child]",
+  #   variable has type "Container[Parent]")
+  #
+  # "T" is invariant:
+  #   no special relation between "Container[Parent]" and "Container[Child]"
 
-      def __call__(self) -> R:
-          ...
+In the example above ``Container[Parent]`` and ``Container[Child]``
+have no special relation, because the type variable ``T`` is **invariant**
+by default.
+
+To replicate the subtyping relation,
+make ``Container[Parent]`` the base class of ``Container[Child]``,
+the type variable ``T`` must be **covariant**:
+
+.. code-block:: python
+  :linenos:
+
+  from typing import Generic, TypeVar
 
 
-  class TextHash(Delayed):
-      def __init__(self, text: str) -> None:
-          self.text = text
+  class Parent: pass
+  class Child(Parent): pass
 
-      def __call__(self) -> int:
-          return sum(ord(x) for x in self.text)
+  T = TypeVar('T', covariant=True)
+  class Container(Generic[T]): pass
 
 
-  compute_hash: Delayed = TextHash("gold diggers diggin' until they find oil")
+  x: Container[Parent] = Container[Child]()
+  # valid: "T" is covariant:
+  #   "Container[Parent]" is then a base class of "Container[Child]"
 
-  lyrics_hash: int = compute_hash()
-  print(lyrics_hash)
-  # prints: 3759
+To reverse the subtyping relation,
+make ``Container[Child]`` the base class of ``Container[Parent]``,
+the type variable ``T`` must be **contravariant**:
 
-This section will be expanded later...
+.. code-block:: python
+  :linenos:
+
+  from typing import Generic, TypeVar
+
+
+  class Parent: pass
+  class Child(Parent): pass
+
+  T = TypeVar('T', contravariant=True)
+  class Container(Generic[T]): pass
+
+
+  x: Container[Child] = Container[Parent]()
+  # valid: "T" is contravariant:
+  #   "Container[Child]" is then a base class of "Container[Parent]"
+
+Here is a full fledged example that demonstrate the variance of type variables.
+In this example a plug-in system is defined:
+
+* all plug-ins share the same base type ``BasePlugIn``
+* a child type ``SecurePlugIn``
+  inherit from few "secure" plug-ins types. that have been manually selected
+* a ``PlugInSandbox[T]`` runs a plug-in in a sandbox,
+  with no special subtyping relation. Therefore ``T`` is **invariant**.
+* ``PlugInInfo[U]`` retrieves the plug-in name,
+  ``PlugInInfo[BasePlugIn]`` is the base type of all plug-in name reader
+  (``PlugInInfo[U]`` where ``U`` is a plug-in type).
+  In consequence, ``U`` is **covariant**.
+* ``PlugInManager[V]`` checks if a plug-in is available.
+  ``PlugInManager[SecurePlugIn]`` is the base type of all managed
+  secure plug-ins (``PlugInManager[V]`` where ``V`` is a secure plug-in).
+  In other words ``V`` is **contravariant**.
+
+.. code-block:: python
+  :linenos:
+
+  from ast import literal_eval
+  from contextlib import contextmanager
+  import time
+  from typing import Generic, TypeVar, Optional, Generator
+
+
+  """
+  PlugIn classes hierarchy:
+
+  BasePlugIn ──┬──> LowerPlugIn ──┬──> SecurePlugIn
+               ├──> TitlePlugIn ──┘
+               │
+               └──> EvalPlugIn
+  """
+
+
+  class BasePlugIn:
+      def execute(self, data: str) -> str:
+          raise NotImplementedError()
+
+
+  class LowerPlugIn(BasePlugIn):
+      def execute(self, data: str) -> str:
+          return data.lower()
+
+
+  class TitlePlugIn(BasePlugIn):
+      def execute(self, data: str) -> str:
+          return data.title()
+
+
+  class EvalPlugIn(BasePlugIn):
+      def execute(self, data: str) -> str:
+          # evaluation of user data, not really secure...
+          return str(literal_eval(data))
+
+
+  class SecurePlugIn(LowerPlugIn, TitlePlugIn):
+      pass
+
+
+  # Create the plugin that will be used in all examples above
+  title_plugin = TitlePlugIn()
+
+
+  #------------------------------------------------------------------------------
+  # Invariant type variables
+  #------------------------------------------------------------------------------
+
+
+  T = TypeVar('T')
+
+
+  class PlugInSandbox(Generic[T]):
+      def __init__(self, plugin: T) -> None:
+          self.plugin: T = plugin
+
+      # A context manager that mimic a sandbox
+      # this code is not relevant to understand the types relations
+      @contextmanager
+      def sandboxed(self) -> Generator[T, None, None]:
+          print("[Sandbox ON]")
+          yield self.plugin
+          print("[Sandbox OFF]")
+
+
+  sandbox: PlugInSandbox[TitlePlugIn] = PlugInSandbox[TitlePlugIn](title_plugin)
+  # valid: value and variable have the same type: "PlugInSandbox[TitlePlugIn]"
+  with sandbox.sandboxed() as safe_plugin:
+      sandboxed_execution_result = safe_plugin.execute('here we go')
+      print(sandboxed_execution_result)
+      # Prints:
+      #   [Sandbox ON]
+      #   Here We Go
+      #   [Sandbox OFF]
+
+  base_sandbox: PlugInSandbox[BasePlugIn] = PlugInSandbox[TitlePlugIn](
+      title_plugin)
+  # error: Incompatible types in assignment (
+  #   expression has type "PlugInSandbox[TitlePlugIn]",
+  #   variable has type "PlugInSandbox[BasePlugIn]")
+  #
+  # "Container[Parent]" -> "Container[Child]" type conversions are only valid
+  #   for *contravariant* type variables. But here "T" type variable is invariant
+
+  secure_sandbox: PlugInSandbox[SecurePlugIn] = PlugInSandbox[TitlePlugIn](
+      title_plugin)
+  # error: Incompatible types in assignment (
+  #   expression has type "PlugInSandbox[TitlePlugIn]",
+  #   variable has type "PlugInSandbox[SecurePlugIn]")
+  #
+  # "Container[Child]" -> "Container[Parent]" type conversions are only valid
+  #   for *covariant* type variables. But here "T" type variable is invariant
+
+
+  #------------------------------------------------------------------------------
+  # Covariant type variables
+  #------------------------------------------------------------------------------
+
+
+  U = TypeVar('U', covariant=True)
+
+
+  class PlugInInfo(Generic[U]):
+      def __init__(self, plugin: U) -> None:
+          self.plugin: U = plugin
+
+      def name(self) -> str:
+          return self.plugin.__class__.__name__
+
+
+  info: PlugInInfo[TitlePlugIn] = PlugInInfo[TitlePlugIn](title_plugin)
+  # valid: value and variable have the same type: "PlugInInfo[TitlePlugIn]"
+  plugin_name = info.name()
+  print(plugin_name)  # Prints: TitlePlugIn
+
+  base_info: PlugInInfo[BasePlugIn] = PlugInInfo[TitlePlugIn](title_plugin)
+  # valid: "U" is covariant, therefore:
+  #   "Container[Child]" -> "Container[Parent]" type conversions are valid
+  base_plugin_name = base_info.name()
+  print(base_plugin_name)  # Prints: TitlePlugIn
+  # note: the type conversion doesn't affect the plug-in runtime class
+  #   that remains "TitlePlugIn"
+
+  secure_info: PlugInInfo[SecurePlugIn] = PlugInInfo[TitlePlugIn](title_plugin)
+  # error: Incompatible types in assignment (
+  #   expression has type "PlugInInfo[TitlePlugIn]",
+  #   variable has type "PlugInInfo[SecurePlugIn]")
+  #
+  # "Container[Parent]" -> "Container[Child]" type conversions are only valid
+  #   for *contravariant* type variables. But here "U" type variable is covariant
+
+
+  #------------------------------------------------------------------------------
+  # Contrariant type variables
+  #------------------------------------------------------------------------------
+
+
+  V = TypeVar('V', contravariant=True)
+
+
+  class PlugInManager(Generic[V]):
+      def __init__(self, plugin: Optional[V] = None) -> None:
+          self.plugin: Optional[V] = plugin
+
+      def is_available(self) -> bool:
+          return self.plugin is not None
+
+
+  manager: PlugInManager[TitlePlugIn] = PlugInManager[TitlePlugIn](title_plugin)
+  # valid: value and variable have the same type: "PlugInManager[TitlePlugIn]"
+  if manager.is_available():
+      message = manager.plugin.execute("hip hip hooray")
+      print(message)  # Prints: Hip Hip Hooray
+
+  base_manager: PlugInManager[BasePlugIn] = PlugInManager[TitlePlugIn]()
+  # error: Incompatible types in assignment (
+  #   expression has type "PlugInManager[TitlePlugIn]",
+  #   variable has type "PlugInManager[BasePlugIn]")
+  #
+  # "Container[Child]" -> "Container[Parent]" type conversions are only valid
+  #   for *covariant* type variables. But here "V" type variable is contravariant
+
+  secure_manager: PlugInManager[SecurePlugIn] = PlugInManager[TitlePlugIn]()
+  # valid: "V" is contravariant, therefore:
+  #   "Container[Parent]" -> "Container[Child]" type conversions are valid
+  if not secure_manager.is_available():
+      print("exiting...")  # Prints: exiting...
 
 Other features
 ^^^^^^^^^^^^^^
 
-* Explicit casting.
-* Dataclasses.
-* Variable annotation restrictions.
+There are practical features that can help programmers write type hints
+with more ease.
 
-This section will be expanded later...
+cast: explicit type casting
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now let's put all that into pratice.
+Sometimes the variables content type doesn't exactly match the expected type.
+If this mismatch doesn't harm the program, it is possible to explicitly
+change the type of the variable using ``cast(TypeX, variable)`` method.
 
-How to "type hint" Guesslang?
------------------------------
+.. code-block:: python
+  :linenos:
+
+  from typing import cast, List
+
+
+  x: List[int] = [0, 1]
+
+  y: List[float] = x
+  # error: Incompatible types in assignment (
+  #   expression has type "List[int]",
+  #   variable has type "List[float]")
+  #
+  # the convertion from "List[float]" to "List[int]" is not implicit
+  #   even if "int" can be implicitly converted to "float"
+
+  z: List[float] = cast(List[float], x)
+  # valid: we explicitly convert "List[int]" into "List[float]"
+
+If the goal is to convert a value (change the runtime class of value),
+you should convert the variable instead of casting its static type.
+In fact the static type casting doesn't actually change the variable class:
+
+.. code-block:: python
+  :linenos:
+
+  from typing import cast, List
+
+
+  message: str = "SUCCESS"
+  status_code: int = cast(int, message)
+  # valid: "status_code" static type have been converted from "str" to "int"
+  #   *but* "status_code" class is "str", like "message".
+  #   Python objects runtime classes are not affected by static type casting.
+
+  print(status_code)  # prints: SUCCESS
+
+Classes to hold data: NamedTuple, @dataclass
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are at least twoo ways to create data holder classes that takes advantage
+of type hints:
+
+* ``NamedTuple``
+  base class defined in
+  `typing standard module <https://docs.python.org/3/library/typing.html#typing.NamedTuple>`_
+  and compatible with **Python >= 3.6**
+* ``@dataclass`` decorator defined in
+  `dataclasses standard module <https://docs.python.org/3/library/dataclasses.html#module-level-decorators-classes-and-functions>`_
+  and compatible with **Python >= 3.7**
+
+They are replacements and/or complements to ``collections.namedtuple``.
+Here is an example using ``@dataclass``:
+
+.. code-block:: python
+  :linenos:
+
+  from dataclasses import dataclass
+
+
+  @dataclass
+  class Voxel:
+      x: int
+      y: int
+      z: int
+      color: str = 'blue'
+
+  broken_voxel: Voxel = Voxel(1.0, -2, 3)
+  # error: Argument 1 to "Voxel" has incompatible type "float"; expected "int"
+  #
+  # the first argument "x" has the wrong type: "float" instead of "int"
+
+  voxel: Voxel = Voxel(1, -2, 3)
+  # valid: all the arguments have the right type
+
+  print(voxel)  # prints: Voxel(x=1, y=-2, z=3, color='blue')
+
+Type definition with forward references
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When a type hint contain a reference to a type that have not been defined yet,
+this type name must be written as a string:
+
+.. code-block:: python
+  :linenos:
+
+  from typing import Optional
+
+
+  class Chain:
+      # the type "Chain" is not fully defined here, all the references to
+      # "Chain" type should be written as a string "'Chain'"
+
+      def __init__(self, value: int, next: Optional['Chain'] = None) -> None:
+          self.value = value
+          self._next = next
+
+      @property
+      def next(self) -> 'Chain':
+          if self._next is None:
+              raise ValueError("Last item: there is are next items")
+          return self._next
+
+
+  head: Chain = Chain(1, Chain(2, Chain(3)))
+  last_value: int = head.next.next.value
+  print(last_value)  # prints: 3
+
+How to add static types to Guesslang source code?
+-------------------------------------------------
+
+Now let's put all that into pratice by adding type hints to Guesslang package.
 
 Current status
 ^^^^^^^^^^^^^^
@@ -404,56 +1121,67 @@ precisely the parts of the code that interacts with ``tensorflow``.
 Hopefully type hints will also reveal any hidden typing bug that
 unit tests didn't detect.
 
-Spending time adding hints only for the sake of adding hints should be avoided,
-including:
+On the other hand it would be good to avoid spending too much time
+adding type hints to portions of code where type hints are not required.
 
-* Adding hints to variables that has an obvious type.
-* Adding hints to variables embedded in functions or classes
-  that might be dropped during the next refacto.
+Definitions with type hint
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-What to hint?
-~~~~~~~~~~~~~
+To reach the goals defined above, type hints will be added
+to the following kind of definitions:
+* Method definition
+* Class definition
+* Class public attributes definitions
+* Ambiguous variable definition
 
-I decided to add type hints to:
-* All methods.
-* And all ambiguous parts of the code that makes the static checker complain.
-
-The hints should be readable and concise *unlike C++ types :-)*
+In addition to that, the added type hints should be readable and concise...
+because *we are not programming in C++ :-)*:
 
 .. code-block:: c++
   :linenos:
 
+  // a function type definition that is not really concise...
   static inline std::map<std::string, int> zip_and_map(
       std::list<std::string> keys,
       std::list<int> values) {
     // map keys zipped with values
   }
 
-Talking about static checker...
-
 Setting up the static checker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The checker I used is the de facto standard Python checker
+Mypy & Typeshed tools
+~~~~~~~~~~~~~~~~~~~~~
+
+The checker I used is the de facto standard Python static type checker
 `Mypy <http://mypy.readthedocs.io/>`_.
 Mypy is maintained by Python core developers including
 `Guido van Rossum <https://en.wikipedia.org/wiki/Guido_van_Rossum>`_,
 the Python language creator.
+Mypy provide quite detailled error message
+that helps quickly fix the typing issues.
 
-You can install Mypy with the following command
+To overcome the lack of type annotations in Python standard library
+as well as third party packages, Mypy uses
+`Typeshed package <https://github.com/python/typeshed/>`_.
+
+Typeshed is a collection of type annotations for Python standard library,
+builtins and some third party packages.
+
+You can install Mypy with the following command:
 
 .. code-block:: shell
   :linenos:
 
   pip install mypy
 
-The workflow
-^^^^^^^^^^^^
+Running the checker
+^^^^^^^^^^^^^^^^^^^
 
 Run statical type checking
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Normal Run, without any change
+The type checker is executed with the command line bellow:
 
 .. code-block:: shell
   :linenos:
@@ -462,41 +1190,283 @@ Normal Run, without any change
 
 Explanation:
 
-* ``mypy``: mypy command line tool
+* ``mypy``: the static type checker command line tool
+
 * ``--strict``: option to check everything,
   will print an **error** or a **warning** if any type issue is found.
+
 * ``--ignore-missing-imports``:
   ignore third party dependencies that lacks type hints.
+  Guesslang is based on ``numpy`` and ``tensorflow`` that doesn't
+  provide type hints information.
+  In addition to that, no type hints is defined for these third party packages
+  in `typeshed <https://github.com/python/typeshed>`_.
+  Without this option the following error would be generated:
 
-Add type hints layer by layer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  .. code-block:: text
+    :linenos:
 
-wip...
+    guesslang/config.py:12: error: Cannot find module named 'tensorflow'
+    guesslang/config.py:12: note: (Perhaps setting MYPYPATH or using the "--ignore-missing-imports" flag would help)
+    guesslang/utils.py:10: error: No library stub file for module 'numpy'
+    guesslang/utils.py:10: note: (Stub files are from https://github.com/python/typeshed)
+    guesslang/guesser.py:10: error: Cannot find module named 'tensorflow'
 
-Fix typing issues
-~~~~~~~~~~~~~~~~~
+Running Mypy will list all the typing issues found by the checker.
+If there is no typing issue Mypy won't print anything.
 
-wip...
+Fixing static typing issues in Guesslang project
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Guess methods types from Mypy error messages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The first and most obvious way to fix static typing issues highlighted by Mypy
+is to read Mypy error message and warning and apply the proposed fixes.
+
+For example the error bellow is fixed by changing the argument type
+from ``str`` to ``int``:
+
+.. code-block:: text
+  :linenos:
+
+  error: Argument 2 to "_pop_many" has incompatible type "int"; expected "str"
+
+In addition to that, there are several ways to get information about the types.
+
+Guess methods types from Guesslang documentation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In fact most of Guesslang methods are documented.
+The arguments and return types are detailled in the documentation.
+We just have to reuse them as type hints.
+
+For example:
+
+.. code-block:: python
+  :linenos:
+
+  def learn(self, input_dir):
+      """Learn languages features from source files.
+
+      :raise GuesslangError: when the default model is used for learning
+      :param str input_dir: source code files directory.
+      :return: learning accuracy
+      :rtype: float
+      """
+      ...
+      return accuracy
+
+The method argument type is given in ``:param str input_dir:``
+and the return type in ``:rtype: float``.
+The type hints for this method are then:
+
+.. code-block:: python
+  :linenos:
+
+  def learn(self, input_dir: str) -> float:
+      """Learn languages features from source files.
+
+      :raise GuesslangError: when the default model is used for learning
+      :param str input_dir: source code files directory.
+      :return: learning accuracy
+      :rtype: float
+      """
+      ...
+      return accuracy
+
+Guess methods types from the unit tests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+All Guesslang "public" methods are tested by unit tested.
+Literal values (with an obvious type) are sent to these methods.
+These types can be used to write the methods type hints.
+
+Example:
+
+.. code-block:: python
+  :linenos:
+
+  def test_split():
+      text = """
+          int * last(int *tab, int size)
+          {
+          \treturn tab + (size - 1);
+          }
+      """
+      tokens = [
+          '\n', 'int', '*', 'last', '(', 'int', '*', 'tab', ',', 'int', 'size',
+          ')', '\n', '{', '\n', 'return', 'tab', '+', '(', 'size', '-', '1', ')',
+          ';', '\n', '}', '\n'
+      ]
+
+      assert extractor.split(text) == tokens
+
+From this test we can easily deduce that ``split(...)`` methods
+takes a string ``str`` as argument and returns a list of strings ``List[str]``:
+
+.. code-block:: python
+  :linenos:
+
+  def split(text: str) -> List[str]:
+      ...
+
+Special types
+~~~~~~~~~~~~~
+
+Some type hints where less usual that the other ones.
+Like:
+* A method that returns a tuple that contains
+
+.. code-block:: python
+  :linenos:
+
+  def probable_languages(
+          self,
+          text: str,
+          max_languages: int = 3) -> Tuple[str, ...]:
+      ...
+
+* A method that takes a file object or STD-IN as argument: ``typing.TextIO``
+
+.. code-block:: python
+  :linenos:
+
+  def _read_file(input_file: TextIO) -> str:
+      ...
+
+* A really long type that have been replaced by an alias
+  to avoid overcomplicated type hints:
+
+.. code-block:: python
+  :linenos:
+
+  DataSet = Tuple[Sequence[Sequence[float]], Sequence[int]]
+
+* A method that produces a callable object.
+  The callable returns tuple of ``Any`` instead of an identifiable type
+  because the tuple will only be used in a code that
+  will not be checked by the static type checker
+  (Tensorflow third party package).
+
+.. code-block:: python
+  :linenos:
+
+  def _to_func(vector: DataSet) -> Callable[[], Tuple[Any, Any]]:
+      return lambda: (
+          tf.constant(vector[0], name='const_features'),
+          tf.constant(vector[1], name='const_labels'))
+
+When guessing types is not enough
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A little Quiz: There is a Guesslang method that loads a JSON string,
+what should be its return type?
+
+.. code-block:: python
+  :linenos:
+
+  def config_dict(name):
+      """Load a JSON configuration dict from Guesslang config directory.
+
+      :param str name: the JSON file name.
+      :return: configuration
+      :rtype: dict
+      """
+      content = ...  # read file content
+      return json.loads(content)
+
+The answer: «We can't define JsonObject in a very tight way ──
+`by Guido van Rossum <https://github.com/python/typing/issues/182#issuecomment-199872724>`_»
+
+The closest definition of ``JsonObject`` would be:
+
+.. code-block:: python
+  :linenos:
+
+  import json
+  from typing import Dict, List, Union
+
+
+  JsonObject = Union[
+      None,
+      int,
+      bool,
+      str,
+      List['JsonObject'],
+      Dict[str, 'JsonObject']
+  ]
+  # error: Recursive types not fully supported yet,
+  #   nested types replaced with "Any"
+  #
+  # "JsonValue" type alias cannot have a reference to itself
+
+
+  value: JsonValue = json.loads('{"a": null}')
+
+Unfortunately it is not yet possible to define reccursive type aliases.
+As a workaround, the ``JsonObject`` is defined
+by ``Dict[str, Any]`` in Guesslang:
+
+.. code-block:: python
+  :linenos:
+
+  def config_dict(name: str) -> Dict[str, Any]:
+      """Load a JSON configuration dict from Guesslang config directory.
+
+      :param str name: the JSON file name.
+      :return: configuration
+      :rtype: dict
+      """
+      content = ...  # read file content
+      return json.loads(content)
+
+Updating Guesslang documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To document the process of adding static types to Guesslang this documentation
+page was written. This page is also a tour of Python static typing feature,
+a feature that might be pillar of the next exciting Python features.
+
+The documentation generated from the source code have been improved using
+the package:
+`sphinx-autodoc-typehints <https://github.com/agronholm/sphinx-autodoc-typehints>`_
+
+With this package, the type annotations are automatically added to the methods
+definitions.
 
 Any actual benefits?
 --------------------
 
-Benefits:
-* Better code understanding.
-* Better type consistency (list -> tuple).
-* New checking in my checking stack:
+As expected, adding type information to Guesslang has a positive impact
+on the project:
 
-  - code testing
-  - test coverage
-  - static type checking
-  - code style checking
+* The source code is easier to read and understand.
+* The project is statically type checked now.
+  The type checking is now part of the continious integration.
+* The code is more consistant now. It is easier to see where an argument
+  with a wrong type is sent to a function:
+  there where a mix-up between ``list`` and ``type`` that have been fixed
+  thanks to the type checking.
+* The documentation is easier to write, no need to add type information in
+  the doctring.
+* The generated documentation is more detailled.
 
-But:
+On the over hand:
 
-* Required workarounds to pass the ckecks:
+* The new type checking didn't uncover new bugs (just little improvements).
+  It only shows that tests are more suitable than type checking to find bugs.
+* Few tweeks where required to fix all the type checking issues.
+  In most cases setting the variable type, casting (``cast``) and
+  using the ``Any`` type where enough to solve the most complex issues.
 
-  * ``Any``
-  * ``cast``,
-  * local variable typing, because of inference.
+Finally
+^^^^^^^
 
-* No new bug found
+I would say that type hints are a big step forward for Python language,
+it builds a solid bridge between the statically typed languages world and
+the dynamically typed languages one.
+Of course the bigger and more complex the project is
+the bigger the type hints benefits will be.
+
+Currently I'm quite happy with them and I will use them in more projects.
