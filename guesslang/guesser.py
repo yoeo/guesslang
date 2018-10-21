@@ -30,7 +30,7 @@ ACCURACY_THRESHOLDS = [60, 90, 99]
 class Guess:
     """Guess the programming language of a source code.
 
-    :param Optional[str] model_dir: Guesslang machine learning model directory.
+    :param model_dir: Guesslang machine learning model directory.
     """
 
     def __init__(self, model_dir: Optional[str] = None) -> None:
@@ -61,9 +61,8 @@ class Guess:
     def language_name(self, text: str) -> str:
         """Predict the programming language name of the given source code.
 
-        :param str text: source code.
+        :param text: source code.
         :return: language name
-        :rtype: str
         """
         values = extract(text)
         input_fn = _to_func(([values], []))
@@ -77,9 +76,8 @@ class Guess:
         the text is written in the given language.
         The score is a `float` value between 0.0 and 1.0
 
-        :param str text: source code.
+        :param text: source code.
         :return: language to score dictionary
-        :rtype: Dict[str, float]
         """
         values = extract(text)
         input_fn = _to_func(([values], []))
@@ -95,10 +93,9 @@ class Guess:
         """List of most probable programming languages,
         the list is ordered from the most probable to the less probable.
 
-        :param str text: source code.
-        :param int max_languages: maximum number of listed languages.
+        :param text: source code.
+        :param max_languages: maximum number of listed languages.
         :return: languages list
-        :rtype: Tuple[str, ...]
         """
         scores = self.scores(text)
 
@@ -122,9 +119,8 @@ class Guess:
         """Learn languages features from source files.
 
         :raise GuesslangError: when the default model is used for learning
-        :param str input_dir: source code files directory.
+        :param input_dir: source code files directory.
         :return: learning accuracy
-        :rtype: float
         """
         if self.is_default:
             LOGGER.error("Cannot learn using default model")
@@ -170,9 +166,8 @@ class Guess:
     def test(self, input_dir: str) -> Dict[str, Any]:
         """Tests the model accuracy using source code files.
 
-        :param str input_dir: source code files directory.
+        :param input_dir: source code files directory.
         :return: test report
-        :rtype: Dict[str, Any]
         """
         report: Dict[str, Any] = {
             'overall-accuracy': 0,

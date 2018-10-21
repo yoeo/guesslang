@@ -32,10 +32,9 @@ def search_files(source: str, extensions: List[str]) -> List[Path]:
     found in source directory and its subdirectories.
 
     :raise GuesslangError: when there is not enough files in the directory
-    :param str source: directory name
-    :param List[str] extensions: list of file extensions
+    :param source: directory name
+    :param extensions: list of file extensions
     :return: filenames
-    :rtype: List[Path]
     """
     files = [
         path for path in Path(source).glob('**/*')
@@ -58,11 +57,10 @@ def extract_from_files(
         languages: Dict[str, str]) -> DataSet:
     """Extract arrays of features from the given files.
 
-    :param List[Path] files: list of paths
-    :param Dict[str,str] languages: language name =>
+    :param files: list of paths
+    :param languages: language name =>
         associated file extension list
     :return: features
-    :rtype: Tuple[Sequence[Sequence[float]], Sequence[int]]
     """
     enumerator = enumerate(sorted(languages.items()))
     rank_map = {ext: rank for rank, (_, exts) in enumerator for ext in exts}
@@ -110,9 +108,8 @@ def safe_read_file(file_path: Path) -> str:
     the file content is correctly decoded.
 
     :raise GuesslangError: when the file encoding is not supported
-    :param pathlib.Path file_path: path to the file to read
+    :param file_path: path to the file to read
     :return: text file content
-    :rtype: str
     """
     for encoding in FILE_ENCODINGS:
         try:

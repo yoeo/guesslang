@@ -25,9 +25,8 @@ def extract(text: str) -> List[float]:
     """Transform the text into a vector of float values.
     The vector is a representation of the text.
 
-    :param str text: the text to represent
+    :param text: the text to represent
     :return: representation
-    :rtype: List[float]
     """
     return _normalize(_vectorize(split(text)))
 
@@ -35,9 +34,8 @@ def extract(text: str) -> List[float]:
 def split(text: str) -> List[str]:
     """Split a text into a list of tokens.
 
-    :param str text: the text to split
+    :param text: the text to split
     :return: tokens
-    :rtype: List[str]
     """
     return [word for word in SEPARATOR.split(text) if word.strip(' \t')]
 
