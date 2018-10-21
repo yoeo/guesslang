@@ -4,9 +4,9 @@ of a given source file.
 
 """
 
-from guesslang.config import config_logging
-from guesslang.guesser import Guess
-from guesslang.utils import GuesslangError
+from guesslang.config import config_logging  # noqa
+from guesslang.guesser import Guess  # noqa
+from guesslang.utils import GuesslangError  # noqa
 
 
 __version__ = '0.9.3'
