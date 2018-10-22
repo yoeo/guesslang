@@ -59,14 +59,11 @@ In fact type hints are **not meant** to make your code run faster
 or to make it consume less RAM.
 They will be mostly ignored during the run-time.
 
-How to use type hints?
-----------------------
+The theory behind type hints
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Before using type hints it is useful, *but not mandatory*,
 to know the core ideas that shape this typing system.
-
-The theory behind type hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Gradual Typing
 ~~~~~~~~~~~~~~
@@ -74,33 +71,36 @@ Gradual Typing
 Python type hints are based on
 `gradual typing <https://wphomes.soic.indiana.edu/jsiek/what-is-gradual-typing/>`_.
 Gradual typing is a typing system where some part of a source code
-can be statistically typed when other parts dynamically typed.
+can be statistically typed while other parts of the same code
+are dynamically typed.
 
 Lets take this portion of code:
 
 .. code-block:: python
   :linenos:
 
-  x = 3       # dynamically typed as a "int"
-  y: int = x  # statically typed as a "int"
+  x = 3       # "x" variable is dynamically typed as "int"
+  y: int = x  # while "y" variable is statically typed as "int"
 
 While ``x`` type can be dynamically inferred (deduced) from its value,
 ``y`` type is statically written in the code.
-For the programmers, the benefit is that they can gradually
-define static types until they reach their goal.
-Ex:
+For programmers, the advantage is that they can gradually
+define static types until they are satisfied.
 
-* Remove any type ambiguity in a program.
-* Define types for all "public" application interfaces.
-* Add types everywhere ?
+Programmers then can stop adding new static types when:
+
+* All type ambiguities have been removed from the program.
+* Or all application public interfaces are statically typed.
+* Or maybe when static types have been added everywhere?
+* etc... (there is no written rule)
 
 Type versus Class
 ~~~~~~~~~~~~~~~~~
 
-An other thing to know is that **types** used in type hints
+An other interesting thing is that **types** used in type hints
 are not always equivalent to **classes**.
-In fact types are static representation of a variable while
-classes are dynamic representation of the same variable.
+In fact types are static representation of a value while
+classes are dynamic representation of the same value.
 
 You can see the difference in the following example:
 
@@ -113,10 +113,17 @@ You can see the difference in the following example:
       # returns None if "value" is an odd number
 
 Like the Schrödinger's cat, the ``even`` function return type is
-both ``str`` or ``NoneType``. This composed type is written ``Optional[str]``.
+**both** ``str`` and ``NoneType``.
+This composed type is written ``Optional[str]``.
 
-On the other hand, during the run-time the class of the returned variable
-is not ``Optional[str]`` but either ``str`` or ``NoneType``.
+On the other hand, during the run-time the class of the returned value
+is not ``Optional[str]`` but **either** ``str`` or ``NoneType``.
+
+How to use type hints?
+----------------------
+
+We will give an overview of the different types
+that can be used for type hints.
 
 Simple types
 ^^^^^^^^^^^^
@@ -126,6 +133,11 @@ Classes as types
 
 All Python classes can be used as types for type hints:
 ``int``, ``float``, ``bool``, ``str``, ``bytes``, etc...
+
+.. note::
+
+  * The ``ERROR`` comments are the messages given by the static type checker.
+    They are explained by the ``->`` comment that follows.
 
 .. code-block:: python
   :linenos:
@@ -143,7 +155,10 @@ Container types
 ~~~~~~~~~~~~~~~
 
 However, some Python classes are not well suited for type hints.
-Like container classes ``list``, ``dict``, ``set``, etc...
+
+For example, Python container classes ``list``, ``dict``, ``set``, etc...
+are too permissive to be used for type hints,
+because it is not possible to define the contained values types:
 
 .. code-block:: python
   :linenos:
@@ -152,11 +167,10 @@ Like container classes ``list``, ``dict``, ``set``, etc...
   y: list = ['a', 'b', 'c']
 
   y[0] = x[0]
-  # OK: both are lists of "something", but too permissive!
+  # OK: because both are lists of "something", but TOO PERMISSIVE
 
-For better type checking, it is required to define the type of
-the contained objects.
-This is done using predefined types available in
+For tighter type checking, it is required to define the content type.
+This is done using the predefined types available in
 `typing standard library <https://docs.python.org/3/library/typing.html>`_.
 
 The previous code will then become:
@@ -187,8 +201,8 @@ like ``Iterator``, ``Iterable``, ``Mapping``, ``Coroutine``, etc...
 Any type
 ~~~~~~~~
 
-There is a special type name ``Any`` that can replace any type.
-It can be used for variable types that are too complex,
+There is a special type named ``Any`` that can replace any type.
+It can be used for types that are too complex,
 or when we don't really care about the type of a given variable.
 
 .. code-block:: python
@@ -202,21 +216,21 @@ or when we don't really care about the type of a given variable.
   z: int = 0
 
   y = x
-  # OK: "Any" can be anything
+  # OK: "Any" is anything
 
   z = x
-  # OK: "Any" can be anything
+  # OK: "Any" can become everything.
+  #   BUT actually "x" content doesn't match "z" static type "int"
 
 As shown in the last line ``z = x``, ``Any`` should be used with care
-to avoid hiding mismatched types errors.
+to avoid hiding mismatched types errors during the run-time.
 
 None type
 ~~~~~~~~~
 
 An other special type is ``None``
 that is used for variables that contains ``None`` value.
-``None`` is used in type hints as a type instead of ``NoneType``
-for simplicity I guess:
+``None`` is used in type hints as an alia of ``type(None)`` AKA ``NoneType``:
 
 .. code-block:: python
   :linenos:
@@ -229,7 +243,7 @@ Aliases and new types
 ~~~~~~~~~~~~~~~~~~~~~
 
 Programmers can create an **alias** for a type (put the type into a variables)
-or even create new **new types**:
+or even create **new types**:
 
 .. code-block:: python
   :linenos:
@@ -250,8 +264,8 @@ or even create new **new types**:
 
 Instances of the new class must be created through the class constructor.
 
-All of these types can be composed to produce types
-that represent better the variable content.
+All of these types can be mixed together to produce composed types
+that represent more precisely a given value.
 
 Composed types
 ^^^^^^^^^^^^^^
@@ -262,7 +276,8 @@ Union type
 ~~~~~~~~~~
 
 ``Union[TypeX, TypeY, TypeZ...]``:
-represents a value that can have any of the types defined in the ``Union``.
+represents a value that can have any of the types that compose the ``Union``:
+``TypeX``, ``TypeY`` or ``TypeZ``, etc...
 
 .. code-block:: python
   :linenos:
@@ -273,7 +288,7 @@ represents a value that can have any of the types defined in the ``Union``.
   representation = input('choose "text" or "number" > ')
   output: Union[int, str] = 'twelve' if representation == 'text' else 12
 
-  print(output)
+  print(output)  # prints «twelve» or «12»
 
 Optional type
 ~~~~~~~~~~~~~
@@ -308,7 +323,11 @@ Callable type
 ~~~~~~~~~~~~~
 
 ``Callable[[TypaParam1, TypeParam2, ...], TypeReturn]``:
-represents a ``callable``, method, ``class``, ``lambda``, metaclass etc...
+represents a ``callable``.
+
+The callable can be a function, a class method, a ``class``, a ``lambda``,
+a metaclass etc... any object that can be called with parenthesis.
+
 ``TypaParam1``, ``TypeParam2``, etc... are the parameters types
 while ``TypeReturn`` is the callable return type.
 
@@ -341,9 +360,9 @@ NoReturn type
       raise RuntimeError(message)
 
   x = fail("an error")
-  # ERROR: Need type annotation for 'x'
+  # ERROR: Need type annotation for "x"
   #
-  # -> in fact, 'x' variable cannot receive a value from a function
+  # -> in fact, "x" variable cannot receive a value from a function
   #   that returns nothing
 
 Object oriented programming support
