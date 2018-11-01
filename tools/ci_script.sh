@@ -1,13 +1,19 @@
 #/bin/bash
 
-pip install -r requirements-dev.txt
+STATUS=0
+
+# install dependencies
+pip install -r requirements-dev.txt || STATUS=$?
 
 # run tests
-python setup.py test
+python setup.py test || STATUS=$?
 
 # check static types
-mypy --strict --ignore-missing-imports guesslang/
+mypy --strict --ignore-missing-imports guesslang/ || STATUS=$?
 
 # check code quality (pylint is disabled for now...)
-#   pylint guesslang/
-flake8 guesslang/
+#   pylint guesslang/ || STATUS=$?
+flake8 guesslang/ || STATUS=$?
+
+# propagate execution status
+exit $STATUS
