@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 import sys
 import time
+from typing import Any, TextIO
 
 from guesslang import Guess, GuesslangError, config_logging
 
@@ -15,7 +16,7 @@ LOGGER = logging.getLogger(__name__)
 REPORT_FILENAME = 'report-{}.json'
 
 
-def main():
+def main() -> None:
     """Run command line"""
     try:
         _real_main()
@@ -27,7 +28,7 @@ def main():
         sys.exit(-2)
 
 
-def _real_main():
+def _real_main() -> None:
     # Get the arguments
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -84,7 +85,7 @@ def _real_main():
     LOGGER.debug("Exit OK")
 
 
-def _read_file(input_file):
+def _read_file(input_file: TextIO) -> str:
     is_stdin = input_file is sys.stdin
     if is_stdin:
         LOGGER.info("↓↓↓  Write your source code here. End with CTR^D  ↓↓↓")
@@ -94,7 +95,7 @@ def _read_file(input_file):
     return content
 
 
-def _save_report(results):
+def _save_report(results: Any) -> Path:
     report_filename = REPORT_FILENAME.format(int(time.time()))
     try:
         with open(report_filename, 'w') as report_file:

@@ -3,6 +3,7 @@
 import logging
 import re
 import math
+from typing import cast, Dict, Tuple, List
 
 from guesslang.config import config_dict
 
@@ -20,28 +21,26 @@ SHIFT = 17
 FACTOR = 23
 
 
-def extract(text):
+def extract(text: str) -> List[float]:
     """Transform the text into a vector of float values.
     The vector is a representation of the text.
 
-    :param str text: the text to represent
+    :param text: the text to represent
     :return: representation
-    :rtype: list
     """
     return _normalize(_vectorize(split(text)))
 
 
-def split(text):
+def split(text: str) -> List[str]:
     """Split a text into a list of tokens.
 
-    :param str text: the text to split
+    :param text: the text to split
     :return: tokens
-    :rtype: list
     """
     return [word for word in SEPARATOR.split(text) if word.strip(' \t')]
 
 
-def _vectorize(tokens):
+def _vectorize(tokens: List[str]) -> List[int]:
     values = []
     for token in tokens:
         if token in KEYWORDS_CACHE:
@@ -62,7 +61,7 @@ def _vectorize(tokens):
     return vector
 
 
-def _merge(hash_list):
+def _merge(hash_list: List[Tuple[int, int]]) -> Tuple[int, int]:
     merged_hash = SHIFT
     merged_weight = 1
     for short_hash, weight in hash_list:
@@ -71,15 +70,15 @@ def _merge(hash_list):
     return (merged_hash, merged_weight)
 
 
-def _normalize(vector):
+def _normalize(vector: List[int]) -> List[float]:
     length = math.sqrt(sum(value**2 for value in vector))
     if not length:
-        return vector
+        return cast(List[float], vector)
     normalized = [value / length for value in vector]
     return normalized
 
 
-def _prepare_cache():
+def _prepare_cache() -> Dict[str, Tuple[int, int]]:
     # Called to fill "KEYWORDS_CACHE" dictionary
     return {
         # word: (short_hash, weight)

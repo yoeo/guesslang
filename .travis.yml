@@ -1,8 +1,7 @@
 dist: trusty
 language: python
 python:
-  - "3.5"
   - "3.6"
 install:
   - pip install .
-script: python setup.py pytest
+script: tools/ci_script.sh

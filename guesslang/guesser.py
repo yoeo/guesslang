@@ -3,15 +3,16 @@
 import gc
 import logging
 from operator import itemgetter
-from pathlib import Path
 from math import ceil, log
+from pathlib import Path
+from typing import List, Tuple, Dict, Iterator, Any, Callable, Optional
 
 import tensorflow as tf
 
 from guesslang.config import model_info, config_dict
 from guesslang.extractor import extract, CONTENT_SIZE
 from guesslang.utils import (
-    search_files, extract_from_files, safe_read_file, GuesslangError)
+    search_files, extract_from_files, safe_read_file, GuesslangError, DataSet)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -29,20 +30,20 @@ ACCURACY_THRESHOLDS = [60, 90, 99]
 class Guess:
     """Guess the programming language of a source code.
 
-    :param str model_dir: Guesslang machine learning model directory.
+    :param model_dir: Guesslang machine learning model directory.
     """
 
-    def __init__(self, model_dir=None):
+    def __init__(self, model_dir: Optional[str] = None) -> None:
         model_data = model_info(model_dir)
 
         #: `tensorflow` model directory
-        self.model_dir = model_data[0]
+        self.model_dir: str = model_data[0]
 
-        #: tells if current model is the default model
-        self.is_default = model_data[1]
+        #: Tells if the current model is the default model
+        self.is_default: bool = model_data[1]
 
-        #: supported languages with associated extensions
-        self.languages = config_dict('languages.json')
+        #: Supported languages associated with their extensions
+        self.languages: Dict[str, List[str]] = config_dict('languages.json')
 
         n_classes = len(self.languages)
         feature_columns = [
@@ -57,44 +58,44 @@ class Guess:
             dnn_optimizer=tf.train.RMSPropOptimizer(OPTIMIZER_STEP),
             model_dir=self.model_dir)
 
-    def language_name(self, text):
+    def language_name(self, text: str) -> str:
         """Predict the programming language name of the given source code.
 
-        :param str text: source code.
+        :param text: source code.
         :return: language name
-        :rtype: str
         """
         values = extract(text)
-        input_fn = _to_func([[values], []])
-        pos = next(self._classifier.predict_classes(input_fn=input_fn))
+        input_fn = _to_func(([values], []))
+        pos: int = next(self._classifier.predict_classes(input_fn=input_fn))
 
         LOGGER.debug("Predicted language position %s", pos)
         return sorted(self.languages)[pos]
 
-    def scores(self, text):
+    def scores(self, text: str) -> Dict[str, float]:
         """A score for each language corresponding to the probability that
         the text is written in the given language.
         The score is a `float` value between 0.0 and 1.0
 
-        :param str text: source code.
+        :param text: source code.
         :return: language to score dictionary
-        :rtype: dict
         """
         values = extract(text)
-        input_fn = _to_func([[values], []])
+        input_fn = _to_func(([values], []))
         prediction = self._classifier.predict_proba(input_fn=input_fn)
         probabilities = next(prediction).tolist()
         sorted_languages = sorted(self.languages)
         return dict(zip(sorted_languages, probabilities))
 
-    def probable_languages(self, text, max_languages=3):
+    def probable_languages(
+            self,
+            text: str,
+            max_languages: int = 3) -> Tuple[str, ...]:
         """List of most probable programming languages,
-        the list is ordered from the most probable to the less probable.
+        the list is ordered from the most probable to the least probable one.
 
-        :param str text: source code.
-        :param int max_languages: maximum number of listed languages.
+        :param text: source code.
+        :param max_languages: maximum number of listed languages.
         :return: languages list
-        :rtype: tuple
         """
         scores = self.scores(text)
 
@@ -114,13 +115,12 @@ class Guess:
         limit = min(max_distance_pos, max_languages)
         return languages[:limit]
 
-    def learn(self, input_dir):
+    def learn(self, input_dir: str) -> float:
         """Learn languages features from source files.
 
         :raise GuesslangError: when the default model is used for learning
-        :param str input_dir: source code files directory.
+        :param input_dir: source code files directory.
         :return: learning accuracy
-        :rtype: float
         """
         if self.is_default:
             LOGGER.error("Cannot learn using default model")
@@ -163,14 +163,13 @@ class Guess:
 
         return accuracy
 
-    def test(self, input_dir):
+    def test(self, input_dir: str) -> Dict[str, Any]:
         """Tests the model accuracy using source code files.
 
-        :param str input_dir: source code files directory.
+        :param input_dir: source code files directory.
         :return: test report
-        :rtype: dict
         """
-        report = {
+        report: Dict[str, Any] = {
             'overall-accuracy': 0,
             'per-language': {
                 lang: {
@@ -225,7 +224,7 @@ class Guess:
         return report
 
 
-def _pop_many(items, chunk_size):
+def _pop_many(items: List[Path], chunk_size: int) -> Iterator[List[Path]]:
     while items:
         yield items[0:chunk_size]
 
@@ -234,13 +233,13 @@ def _pop_many(items, chunk_size):
         gc.collect()
 
 
-def _to_func(vector):
+def _to_func(vector: DataSet) -> Callable[[], Tuple[Any, Any]]:
     return lambda: (
         tf.constant(vector[0], name='const_features'),
         tf.constant(vector[1], name='const_labels'))
 
 
-def _comment(accuracy):
+def _comment(accuracy: float) -> None:
     not_bad, good, perfect = ACCURACY_THRESHOLDS
     percentage = 100 * accuracy
 

@@ -4,6 +4,7 @@ import json
 import logging.config
 from pathlib import Path
 import platform
+from typing import cast, Dict, Any, Tuple, Optional
 
 from pkg_resources import (
     Requirement, resource_string, resource_filename, DistributionNotFound)
@@ -33,7 +34,12 @@ class ColorLogFormatter(logging.Formatter):
         'END': '\033[0m',
     }
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
+        """Format log records to produce colored messages.
+
+        :param record: log record
+        :return: log message
+        """
         if platform.system() != 'Linux':  # Avoid funny logs on Windows & MacOS
             return super().format(record)
 
@@ -44,10 +50,10 @@ class ColorLogFormatter(logging.Formatter):
         return super().format(record)
 
 
-def config_logging(debug=False):
+def config_logging(debug: bool = False) -> None:
     """Set-up application and `tensorflow` logging.
 
-    :param bool debug: show or hide debug messages
+    :param debug: show or hide debug messages
     """
     if debug:
         level = 'DEBUG'
@@ -64,12 +70,11 @@ def config_logging(debug=False):
     tf.logging.set_verbosity(tf_level)
 
 
-def config_dict(name):
+def config_dict(name: str) -> Dict[str, Any]:
     """Load a JSON configuration dict from Guesslang config directory.
 
-    :param str name: the JSON file name.
+    :param name: the JSON file name.
     :return: configuration
-    :rtype: dict
     """
     try:
         content = resource_string(PACKAGE, DATADIR.format(name)).decode()
@@ -77,16 +82,16 @@ def config_dict(name):
         LOGGER.warning("Cannot load %s from packages: %s", name, error)
         content = DATA_FALLBACK.joinpath(name).read_text()
 
-    return json.loads(content)
+    return cast(Dict[str, Any], json.loads(content))
 
 
-def model_info(model_dir=None):
+def model_info(model_dir: Optional[str] = None) -> Tuple[str, bool]:
     """Retrieve Guesslang model directory name,
     and tells if it is the default model.
 
-    :param str model_dir: model location,  if `None` default model is selected
-    :return: selected model info
-    :rtype: tuple
+    :param model_dir: model location, if `None` default model is selected
+    :return: selected model directory with an indication
+        that the model is the default or not
     """
     if model_dir is None:
         try:

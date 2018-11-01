@@ -5,6 +5,7 @@ import multiprocessing
 from pathlib import Path
 import random
 import signal
+from typing import List, Dict, Sequence, Tuple
 
 import numpy as np
 
@@ -19,20 +20,21 @@ FILE_ENCODINGS = ('utf-8', 'latin-1', 'windows-1250', 'windows-1252')
 NB_LINES = 100
 NB_FILES_MIN = 10
 
+DataSet = Tuple[Sequence[Sequence[float]], Sequence[int]]
+
 
 class GuesslangError(Exception):
     """`guesslang` base exception class"""
 
 
-def search_files(source, extensions):
-    """Name of the files with the right extensions
-    found in source directory and its subdirectories.
+def search_files(source: str, extensions: List[str]) -> List[Path]:
+    """Retrieve files located the source directory and its subdirectories,
+    whose extension match one of the listed extensions.
 
     :raise GuesslangError: when there is not enough files in the directory
-    :param str source: directory name
-    :param list extensions: list of file extensions
+    :param source: directory name
+    :param extensions: list of file extensions
     :return: filenames
-    :rtype: list
     """
     files = [
         path for path in Path(source).glob('**/*')
@@ -50,13 +52,15 @@ def search_files(source, extensions):
     return files
 
 
-def extract_from_files(files, languages):
+def extract_from_files(
+        files: List[Path],
+        languages: Dict[str, List[str]]) -> DataSet:
     """Extract arrays of features from the given files.
 
-    :param list files: list of filenames
-    :param dict languages: language name => associated file extension list
+    :param files: list of paths
+    :param languages: language name =>
+        associated file extension list
     :return: features
-    :rtype: tuple
     """
     enumerator = enumerate(sorted(languages.items()))
     rank_map = {ext: rank for rank, (_, exts) in enumerator for ext in exts}
@@ -69,12 +73,14 @@ def extract_from_files(files, languages):
     return arrays
 
 
-def _process_init():
+def _process_init() -> None:
     # Stop the subprocess silently when the main process is killed
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
-def _extract_features(path, rank_map):
+def _extract_features(
+        path: Path,
+        rank_map: Dict[str, int]) -> Tuple[List[float], int]:
     ext = path.suffix.lstrip('.')
     rank = rank_map.get(ext)
     if rank is None:
@@ -82,10 +88,10 @@ def _extract_features(path, rank_map):
 
     content = safe_read_file(path)
     content = '\n'.join(content.splitlines()[:NB_LINES])
-    return [extract(content), rank]
+    return (extract(content), rank)
 
 
-def _to_arrays(features):
+def _to_arrays(features: List[Tuple[List[float], int]]) -> DataSet:
     # Flatten and split the dataset
     ranks = []
     content_vectors = []
@@ -97,14 +103,13 @@ def _to_arrays(features):
     return (np.array(content_vectors), np.array(ranks))
 
 
-def safe_read_file(file_path):
-    """Read the text file, several text encodings are tried until
+def safe_read_file(file_path: Path) -> str:
+    """Read a text file. Several text encodings are tried until
     the file content is correctly decoded.
 
     :raise GuesslangError: when the file encoding is not supported
-    :param pathlib.Path file_path: path to the file to read
+    :param file_path: path to the input file
     :return: text file content
-    :rtype: str
     """
     for encoding in FILE_ENCODINGS:
         try:
