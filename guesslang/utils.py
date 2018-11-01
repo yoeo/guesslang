@@ -54,7 +54,7 @@ def search_files(source: str, extensions: List[str]) -> List[Path]:
 
 def extract_from_files(
         files: List[Path],
-        languages: Dict[str, str]) -> DataSet:
+        languages: Dict[str, List[str]]) -> DataSet:
     """Extract arrays of features from the given files.
 
     :param files: list of paths
