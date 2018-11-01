@@ -9,4 +9,4 @@ from guesslang.guesser import Guess  # noqa: F401
 from guesslang.utils import GuesslangError  # noqa: F401
 
 
-__version__ = '0.9.3'
+__version__ = '0.9.4'
