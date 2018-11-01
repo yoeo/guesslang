@@ -2,7 +2,7 @@
 pytest
 
 # Tools
-requests>=2.13,<2.14
+requests>=2,<3
 
 # Doc
 Sphinx
