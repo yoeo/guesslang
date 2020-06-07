@@ -1,7 +1,7 @@
 # Guesslang [![Build Status](https://travis-ci.org/yoeo/guesslang.svg?branch=master)](https://travis-ci.org/yoeo/guesslang) [![Documentation Status](https://readthedocs.org/projects/guesslang/badge/?version=latest)](http://guesslang.readthedocs.io/en/latest/?badge=latest)
 
 
-![Chameledit](docs/_static/images/guesslang-small.png)
+![Guesslang](docs/_static/images/guesslang-small.png)
 
 Guesslang detects the programming language of a given source code:
 
@@ -179,12 +179,14 @@ print(name)  # ⟶ Erlang
 * [Guesslang documentation](https://guesslang.readthedocs.io/en/latest/)
 
 * Gesslang training dataset created with
-  [GuesslangTool](https://github.com/yoeo/guesslangtool)
+  [GuesslangTools](https://github.com/yoeo/guesslangtools)
 
 * Guesslang developped with [Tensorflow](https://www.tensorflow.org/)
 
 * Guesslang icon created with
   [AndroidAssetStudio](https://github.com/romannurik/AndroidAssetStudio)
+  and
+  [Eduardo Tunni's Warnes font](https://fonts.google.com/specimen/Warnes)
 
 * Example source codes used here retrieved from
   [Rosetta Code](https://rosettacode.org/wiki/Sorting_algorithms/Quicksort)

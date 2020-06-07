@@ -202,10 +202,10 @@ is essential to correctly train a model.
 For Guesslang we built a large dataset using:
 
 * **1 080 000** unique source code **files**
-* randomly picked from **101 871** public Github **repositories**.
+* randomly picked from **101 871** public open source Github **repositories**.
 
 This large dataset built with
-`GuesslangTool <https://github.com/yoeo/guesslangtool>`_,
+`GuesslangTools <https://github.com/yoeo/guesslangtools>`_,
 is used to train, evaluate and test Guesslang's deep learning model.
 
 To avoid `overfitting <https://en.wikipedia.org/wiki/Overfitting>`_
@@ -272,7 +272,7 @@ References
 * `Guesslang source code is on Github <https://github.com/yoeo/guesslang>`_.
 * Guesslang is developped with `Tensorflow <https://www.tensorflow.org/>`_
   machine learning framework.
-* Use `GuesslangTool <https://github.com/yoeo/guesslangtool>`_
+* Use `GuesslangTools <https://github.com/yoeo/guesslangtools>`_
   to build your own training dataset.
 * The source codes used as examples are from
   `Rosetta Code <https://rosettacode.org/wiki/Sorting_algorithms/Quicksort>`_.
