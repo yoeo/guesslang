@@ -77,4 +77,8 @@ html_theme_options = {
     'logo': 'images/guesslang.png',
     'github_user': 'yoeo',
     'github_repo': 'guesslang',
+    'description': 'A programming language detection tool',
+    'logo_name': True,
+    'travis_button': True,
+    'sidebar_collapse': False,
 }
