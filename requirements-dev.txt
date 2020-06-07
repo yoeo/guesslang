@@ -4,9 +4,6 @@ pytest
 # Documentation
 Sphinx
 
-## FIXME
-sphinx-autodoc-typehints>=1,<2
-
 # Code checkers
 flake8
 mypy
