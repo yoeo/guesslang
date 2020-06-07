@@ -2,7 +2,7 @@
 
 set -ex
 
-# install dependencies
+# install CI dependencies
 pip install -r requirements-dev.txt
 
 # run tests
