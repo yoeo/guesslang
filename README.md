@@ -16,17 +16,19 @@ func main() {
 
 ' | guesslang
 
-# Output: The source code is written in Go
+# ⟶ Programming language: Go
 ```
 
-Guesslang supports `20 programming languages`:
+Guesslang supports `30 programming languages`:
 
-| Languages   |             |             |             |             |
-|-------------|-------------|-------------|-------------|-------------|
-| C           | C#          | C++         | CSS         | Erlang      |
-| Go          | HTML        | Java        | Javascript  | Markdown    |
-| Objective-C | PHP         | Perl        | Python      | Ruby        |
-| Rust        | SQL         | Scala       | Shell       | Swift       |
+| Languages      |               |                    |        |              |
+|----------------|---------------|--------------------|--------|--------------|
+| `Batchfile`    | `C`           | `C#`               | `C++`  | `CSS`        |
+| `CoffeeScript` | `Erlang`      | `Go`               | `HTML` | `Haskell`    |
+| `Java`         | `JavaScript`  | `Jupyter Notebook` | `Lua`  | `Markdown`   |
+| `Matlab`       | `Objective-C` | `PHP`              | `Perl` | `PowerShell` |
+| `Python`       | `R`           | `Ruby`             | `Rust` | `SQL`        |
+| `Scala`        | `Shell`       | `Swift`            | `TeX`  | `TypeScript` |
 
 With a guessing **accuracy higher than 90%**.
 
@@ -94,9 +96,9 @@ guesslang --help
 * Detect the programming language of ``/bin/which``:
 
 ```bash
-guesslang -i /bin/which
+guesslang /bin/which
 
-# >>> The source code is written in Shell
+# ⟶ Programming language: Shell
 ```
 
 * Detect the programming language of a given text:
@@ -112,37 +114,36 @@ object Main {
 }
 ' | guesslang
 
-# >>> The source code is written in Scala
+# ⟶ Programming language: Scala
 ```
 
-* Detect the programming languages of a source code that embeds
-  an other source code ([sourcecodeception](http://explosm.net/comics/1605/)):
+* Show the detection probabilities for a given source code:
 
 ```bash
-echo '
-from __future__ import print_function
+echo "
+def qsort(items):
+    if not items:
+        return []
+    else:
+        pivot = items[0]
+        less = [x for x in items if x <  pivot]
+        more = [x for x in items[1:] if x >= pivot]
+        return qsort(less) + [pivot] + qsort(more)
 
 
-def dump_code(code):
-  print(code)
+if __name__ == '__main__':
+    items = [1, 4, 2, 7, 9, 3]
+    print(f'Sorted: {qsort(items)}')
 
+" | guesslang --probabilities
 
-if __name__ == "__main__":
-    dump_code("""
-        #include<stdio.h>
-
-        int main(int argc, char** argv)
-        {
-          char* command = argv[0];
-          printf("%s - %d args\n", command, --argc);
-          return 0;
-        }
-    """
-    )
-
-' | guesslang --all
-
-# >>> The source code is written in Python or C
+# Language name       Probability
+#  Python               80.53%
+#  Batchfile             6.16%
+#  CoffeeScript          2.18%
+#  Markdown              1.66%
+#  JavaScript            1.47%
+# ...
 ```
 
 ## Guesslang Python package
@@ -155,7 +156,9 @@ if __name__ == "__main__":
 from guesslang import Guess
 
 
-name = Guess().language_name("""
+guess = Guess()
+
+name = guess.language_name("""
     % Quick sort
 
     -module (recursion).
@@ -168,14 +171,22 @@ name = Guess().language_name("""
           qsort([X || X <- T, X >= Pivot]).
 """)
 
-print(name)  # >>> Erlang
+print(name)  # ⟶ Erlang
 ```
 
 ## License and credits
 
 * [Guesslang documentation](https://guesslang.readthedocs.io/en/latest/)
 
+* Gesslang training dataset created with
+  [GuesslangTool](https://github.com/yoeo/guesslangtool)
+
+* Guesslang developped with [Tensorflow](https://www.tensorflow.org/)
+
 * Guesslang icon created with
   [AndroidAssetStudio](https://github.com/romannurik/AndroidAssetStudio)
 
-* Guesslang — Copyright (c) 2017 Y. SOMDA, [MIT License](LICENSE)
+* Example source codes used here retrieved from
+  [Rosetta Code](https://rosettacode.org/wiki/Sorting_algorithms/Quicksort)
+
+* Guesslang — Copyright (c) 2020 Y. SOMDA, [MIT License](LICENSE)

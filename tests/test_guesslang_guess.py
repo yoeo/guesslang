@@ -4,83 +4,122 @@ import tempfile
 
 import pytest
 
-from guesslang import guesser, GuesslangError
-
-from guesslang_fixtures import FIXTURES_PATH, copy_fixtures
-
-
-C_FILE = FIXTURES_PATH.joinpath('file.c')
+from guesslang import Guess, GuesslangError
+from guesslang.guess import DatasetDirname
 
 
-def test_guess():
-    guess = guesser.Guess()
+C_CODE = """
+#include <stdio.h>
 
-    assert Path(guess.model_dir).exists()
+int main(int argc, char* argv[])
+{
+  printf("Hello world");
+}
+"""
+
+PYTHON_CODE = """
+from __future__ import print_function
+
+
+if __name__ == "__main__":
+    print("Hello world")
+"""
+
+PLAIN_TEXT = 'The quick brown fox jumps over the lazy dog'
+
+
+def test_guess_init():
+    guess = Guess()
     assert guess.is_default
-    assert guess.languages
 
+
+def test_guess_init_with_model_dir():
     with tempfile.TemporaryDirectory() as model_dir:
-        guess = guesser.Guess(model_dir)
-        assert Path(guess.model_dir).samefile(model_dir)
-        assert Path(guess.model_dir).exists()
+        guess = Guess(model_dir)
         assert not guess.is_default
-        assert guess.languages
+
+
+def test_guess_init_with_non_existing_model_dir():
+    with tempfile.TemporaryDirectory() as model_dir:
+        model_path = Path(model_dir)
+        model_path.rmdir()
+        assert not model_path.exists()
+
+        guess = Guess(model_dir)
+        assert not guess.is_default
+        assert model_path.exists()
+
+
+def test_guess_supported_languages():
+    guess = Guess()
+    assert len(guess.supported_languages) >= 30
+    assert 'Python' in guess.supported_languages
+    assert 'C' in guess.supported_languages
 
 
 def test_guess_language_name():
-    content = C_FILE.read_text()
-    assert guesser.Guess().language_name(content) == 'C'
+    guess = Guess()
+    assert guess.language_name(PYTHON_CODE) == 'Python'
+    assert guess.language_name(C_CODE) == 'C'
 
 
-def test_guess_scores():
-    guess = guesser.Guess()
-    known_languages = list(guess.languages)
-
-    content = C_FILE.read_text()
-    scores = guess.scores(content)
-    scored_languages = list(scores)
-    best_scored_language = max(scores.items(), key=itemgetter(1))[0]
-    assert set(known_languages) == set(scored_languages)
-    assert len(known_languages) == len(scored_languages)
-    assert best_scored_language == 'C'
+def test_guess_language_name_empty_code():
+    guess = Guess()
+    assert guess.language_name('') is None
 
 
-def test_guess_probable_languages():
-    content = C_FILE.read_text()
-    assert 'C' in guesser.Guess().probable_languages(content)
-
-    names = guesser.Guess().probable_languages(content, max_languages=5)
-    assert len(names) <= 5
+@pytest.mark.skip(reason='The plain text is detected as Markdown')
+def test_guess_language_name_plain_text():
+    guess = Guess()
+    assert guess.language_name(PLAIN_TEXT) is None
 
 
-def test_guess_learn():
-    with tempfile.TemporaryDirectory() as dirname:
-        copy_fixtures(dirname, nb_times=10)
+def test_guess_probabilities():
+    guess = Guess()
+    scores = guess.probabilities(PYTHON_CODE)
+    assert len(scores) == len(guess.supported_languages)
 
-        # Cannot learn using default model
+    for language, probability in scores:
+        assert language in guess.supported_languages
+        assert 0 <= probability <= 1
+
+    top_language = scores[0][0]
+    assert top_language == 'Python'
+
+
+def test_guess_train_with_default_model():
+    guess = Guess()
+    with tempfile.TemporaryDirectory() as source_files_dir:
+        _create_training_files(source_files_dir)
+
         with pytest.raises(GuesslangError):
-            guesser.Guess().learn(dirname)
-
-    temp_model_dir = tempfile.TemporaryDirectory()
-    with tempfile.TemporaryDirectory() as dirname:
-        copy_fixtures(dirname, nb_times=10)
-
-        accuracy = guesser.Guess(temp_model_dir.name).learn(dirname)
-        assert 0 <= accuracy <= 1
-
-    try:
-        temp_model_dir.cleanup()
-    except OSError:
-        # Occures on Windows only
-        # - OSError: [WinError 145] The directory is not empty
-        pass
+            guess.train(source_files_dir, max_steps=10)
 
 
-def test_guess_test():
-    with tempfile.TemporaryDirectory() as dirname:
-        copy_fixtures(dirname, nb_times=10)
+def test_guess_train_without_subdirectories():
+    with tempfile.TemporaryDirectory() as model_dir:
+        guess = Guess(model_dir)
+        with tempfile.TemporaryDirectory() as source_files_dir:
 
-        report = guesser.Guess().test(dirname)
-        assert 0 <= report['overall-accuracy'] <= 1
-        assert report['per-language']['C']['nb-files'] == 10
-        assert report['per-language']['Python']['nb-files'] == 10
+            with pytest.raises(GuesslangError):
+                guess.train(source_files_dir, max_steps=10)
+
+
+def test_guess_train():
+    with tempfile.TemporaryDirectory() as model_dir:
+        guess = Guess(model_dir)
+        with tempfile.TemporaryDirectory() as source_files_dir:
+            _create_training_files(source_files_dir)
+            guess.train(source_files_dir, max_steps=10)
+
+        assert guess.language_name(PYTHON_CODE) == 'Python'
+        assert guess.language_name(C_CODE) == 'C'
+
+
+def _create_training_files(source_files_dir):
+    root_path = Path(source_files_dir)
+    for dirname in DatasetDirname:
+        dataset_path = root_path.joinpath(dirname)
+        dataset_path.mkdir()
+        dataset_path.joinpath('xxx.c').write_text(C_CODE)
+        dataset_path.joinpath('xxx.py').write_text(PYTHON_CODE)

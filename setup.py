@@ -68,7 +68,7 @@ setup(
     platforms='any',
     packages=find_packages(exclude=['tests', 'tools']),
     install_requires=Path('requirements.txt').read_text(),
-    zip_safe=True,
+    zip_safe=False,
     include_package_data=True,
     entry_points={
         'console_scripts': ['guesslang = guesslang.__main__:main']

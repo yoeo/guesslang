@@ -1,14 +1,13 @@
-# Tests
+# Tests runner
 pytest
 
-# Tools
-requests>=2,<3
-
-# Doc
+# Documentation
 Sphinx
-sphinx-autodoc-typehints>=1.3,<=1.4
 
-# Checkers
+## FIXME
+sphinx-autodoc-typehints>=1,<2
+
+# Code checkers
 flake8
 mypy
 pylint
