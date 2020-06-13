@@ -50,6 +50,7 @@ Guesslang supports **30** of the **most popular** programming languages:
 | ``Scala``        | ``Shell``       | ``Swift``            | ``TeX``  | ``TypeScript`` |
 +------------------+-----------------+----------------------+----------+----------------+
 
+.. _end-description:
 
 Guesslang is used by cool projects like the guessing game
 `GG <https://github.com/yoeo/gg>`_ or
