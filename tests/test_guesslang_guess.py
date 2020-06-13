@@ -1,11 +1,10 @@
-from operator import itemgetter
 from pathlib import Path
 import tempfile
 
 import pytest
 
 from guesslang import Guess, GuesslangError
-from guesslang.guess import DatasetDirname
+from guesslang.model import DATASET
 
 
 C_CODE = """
@@ -30,24 +29,13 @@ PLAIN_TEXT = 'The quick brown fox jumps over the lazy dog'
 
 def test_guess_init():
     guess = Guess()
-    assert guess.is_default
+    assert guess.is_trained
 
 
 def test_guess_init_with_model_dir():
     with tempfile.TemporaryDirectory() as model_dir:
         guess = Guess(model_dir)
-        assert not guess.is_default
-
-
-def test_guess_init_with_non_existing_model_dir():
-    with tempfile.TemporaryDirectory() as model_dir:
-        model_path = Path(model_dir)
-        model_path.rmdir()
-        assert not model_path.exists()
-
-        guess = Guess(model_dir)
-        assert not guess.is_default
-        assert model_path.exists()
+        assert not guess.is_trained
 
 
 def test_guess_supported_languages():
@@ -66,6 +54,15 @@ def test_guess_language_name():
 def test_guess_language_name_empty_code():
     guess = Guess()
     assert guess.language_name('') is None
+
+
+def test_guess_language_name_untrained_model():
+    with tempfile.TemporaryDirectory() as model_dir:
+        guess = Guess(model_dir)
+        assert not guess.is_trained
+
+        with pytest.raises(GuesslangError):
+            guess.language_name(C_CODE)
 
 
 @pytest.mark.skip(reason='The plain text is detected as Markdown')
@@ -118,7 +115,7 @@ def test_guess_train():
 
 def _create_training_files(source_files_dir):
     root_path = Path(source_files_dir)
-    for dirname in DatasetDirname:
+    for dirname in DATASET.values():
         dataset_path = root_path.joinpath(dirname)
         dataset_path.mkdir()
         dataset_path.joinpath('xxx.c').write_text(C_CODE)

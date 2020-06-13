@@ -9,7 +9,7 @@ pip install -r requirements-dev.txt
 python setup.py test
 
 # check static types
-mypy --strict --ignore-missing-imports guesslang/
+mypy --strict --ignore-missing-imports .
 
 # check code quality (pylint is disabled for now...)
 #   pylint guesslang/

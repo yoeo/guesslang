@@ -9,7 +9,8 @@ from typing import Any, TextIO, Dict
 
 import tensorflow as tf
 
-from guesslang.guess import Guess, GuesslangError, DatasetDirname
+from guesslang.guess import Guess, GuesslangError
+from guesslang.model import DATASET
 
 
 LOGGER = logging.getLogger(__name__)
@@ -105,8 +106,8 @@ def main() -> None:
 
         LOGGER.debug('Exit OK')
 
-    except GuesslangError as error:
-        LOGGER.critical(f'Failed: {error}')
+    except GuesslangError:
+        LOGGER.critical('Failed!')
         sys.exit(1)
 
     except KeyboardInterrupt:
@@ -149,7 +150,7 @@ def _build_argument_parser() -> ArgumentParser:
         help=f"""
             train from a directory containing source code files.
             The source files should be split in 3 directories named:
-            {', '.join(DatasetDirname)}.
+            {', '.join(DATASET.values())}.
 
             --model and --steps values should be provided when using --train
         """
