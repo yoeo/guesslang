@@ -111,7 +111,7 @@ Python package
 
 Guesslang Python library helps you detect the programming language
 of a given text within your Python program.
-The Python classes are fully docummentation here: :doc:`guesslang`.
+The Python classes are fully documentation here: :doc:`guesslang`.
 
 Command line tool
 ^^^^^^^^^^^^^^^^^
@@ -187,7 +187,7 @@ Deep learning Model
 
 Guesslang uses a deep learning `Tensorflow <https://www.tensorflow.org/>`_
 model built with more than **1,000,000** unique source code files,
-from over **100,000** differents projects.
+from over **100,000** different projects.
 
 Guesslang model is a Deep Neural Network classifier
 combined with Linear classifier.
@@ -209,7 +209,7 @@ This large dataset built with
 `GuesslangTools <https://github.com/yoeo/guesslangtools>`_,
 is used to train, evaluate and test Guesslang's deep learning model.
 
-To avoid `overfitting <https://en.wikipedia.org/wiki/Overfitting>`_
+To avoid `overfitting <https://en.wikipedia.org/wiki/Overfitting>`_,
 each repositories is **strictly** associated with only one of
 the 3 aforementioned tasks.
 Therefore files from a repository assigned to the training task
