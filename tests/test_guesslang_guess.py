@@ -54,6 +54,7 @@ def test_guess_language_name():
 def test_guess_language_name_empty_code():
     guess = Guess()
     assert guess.language_name('') is None
+    assert guess.language_name(' \t \n ') is None
 
 
 def test_guess_language_name_untrained_model():
