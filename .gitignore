@@ -92,3 +92,4 @@ ENV/
 
 README.md.html
 .mypy_cache/
+.pytest_cache

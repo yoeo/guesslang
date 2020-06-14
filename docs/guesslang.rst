@@ -1,30 +1,17 @@
 Guesslang package
-=====================================
+=================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
 guesslang.Guess
--------------------------------------
+---------------
 
 .. autoclass:: guesslang.Guess
    :members:
 
-guesslang.utils
--------------------------------------
+guesslang.GuesslangError
+------------------------
 
-.. automodule:: guesslang.utils
-  :members:
-
-guesslang.extractor
--------------------------------------
-
-.. automodule:: guesslang.extractor
-  :members:
-
-guesslang.config
--------------------------------------
-
-.. automodule:: guesslang.config
-  :members:
+.. automodule:: guesslang.GuesslangError
