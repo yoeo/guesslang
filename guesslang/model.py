@@ -141,10 +141,10 @@ def predict(
 ) -> List[Tuple[str, float]]:
     """Infer a Tensorflow saved model"""
     content_tensor = tf.constant([text])
-    predicted = saved_model.signatures['predict'](content_tensor)
+    predicted = saved_model.signatures['serving_default'](content_tensor)
 
-    numpy_floats = predicted['probabilities'][0].numpy()
-    extensions = predicted['all_classes'][0].numpy()
+    numpy_floats = predicted['scores'][0].numpy()
+    extensions = predicted['classes'][0].numpy()
 
     probability_values = (float(value) for value in numpy_floats)
     languages = (mapping[ext.decode()] for ext in extensions)
