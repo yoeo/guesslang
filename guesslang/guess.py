@@ -89,7 +89,7 @@ class Guess:
         programming language.
 
         :param source_code: source code.
-        :return: list of language names associated with their probablilty.
+        :return: list of language names associated with their probability.
         """
         if not self.is_trained:
             LOGGER.error('Cannot predict using an untrained model')
