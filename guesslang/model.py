@@ -25,11 +25,12 @@ DATASET = {
 class HyperParameter:
     """Model hyper parameters"""
     BATCH_SIZE = 100
-    NB_TOKENS = 1000
-    VOCABULARY_SIZE = 20000
-    EMBEDDING_SIZE = int(VOCABULARY_SIZE**0.5)
+    NB_TOKENS = 10000
+    VOCABULARY_SIZE = 5000
+    EMBEDDING_SIZE = max(10, int(VOCABULARY_SIZE**0.5))
     DNN_HIDDEN_UNITS = [512, 32]
     DNN_DROPOUT = 0.5
+    N_GRAM = 2
 
 
 class Training:
@@ -208,7 +209,8 @@ def _preprocess(
 def _preprocess_text(data: tf.Tensor) -> tf.Tensor:
     """Feature engineering"""
     padding = tf.constant(['']*HyperParameter.NB_TOKENS)
-    data = tf.strings.split([data]).values
+    data = tf.strings.bytes_split(data)
+    data = tf.strings.ngrams(data, HyperParameter.N_GRAM)
     data = tf.concat((data, padding), axis=0)
     data = data[:HyperParameter.NB_TOKENS]
     return data
