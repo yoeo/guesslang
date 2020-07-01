@@ -232,7 +232,7 @@ Accuracy
 
 Guesslang deep learning model performs very well.
 It was tested with 12,000 different source code files and correctly
-guessed the programming language of **93.29%** of them.
+guessed the programming language of **93.82%** of them.
 
 Most of the misclassifications come from few languages
 that are **compatible** with each other, like C/C++ or JavaScript/TypeScript.
