@@ -3,11 +3,8 @@
 from argparse import ArgumentParser, FileType
 from copy import deepcopy
 import logging.config
-import os
 import sys
 from typing import Any, TextIO, Dict
-
-import tensorflow as tf
 
 from guesslang.guess import Guess, GuesslangError
 from guesslang.model import DATASET
@@ -57,18 +54,9 @@ def main() -> None:
         parser.error('--model and --steps are required when using --train')
 
     # Setup loggers
-    if args.debug:
-        logging_level = logging.DEBUG
-        tf_logging_level = logging.INFO
-        tf_backend_logging_level = '0'
-    else:
-        logging_level = logging.INFO
-        tf_logging_level = logging.ERROR
-        tf_backend_logging_level = '3'
+    logging_level = logging.DEBUG if args.debug else logging.INFO
     logging_config = _update_config(LOGGING_CONFIG, logging_level)
     logging.config.dictConfig(logging_config)
-    tf.get_logger().setLevel(tf_logging_level)
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = tf_backend_logging_level
 
     # Load the programming language guessing model
     LOGGER.debug(f'Arguments: {args}')

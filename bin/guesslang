@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Hide all the Tensorflow warnings at the startup of the application
+TF_CPP_MIN_LOG_LEVEL=3 python -m guesslang $*
