@@ -36,10 +36,7 @@ class Guess:
             self._model = None
 
         language_json = LANGUAGES_FILE.read_text()
-        language_info = json.loads(language_json)
-        self._language_map = {
-            name: exts[0] for name, exts in language_info.items()
-        }
+        self._language_map = json.loads(language_json)
         self._extension_map = {
             ext: name for name, ext in self._language_map.items()
         }
