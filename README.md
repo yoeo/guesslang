@@ -33,7 +33,7 @@ Guesslang supports `30 programming languages`:
 | `Perl`     | `PHP`          | `PowerShell`  | `Prolog`       | `Python`     |
 | `R`        | `Ruby`         | `Rust`        | `Scala`        | `Shell`      |
 | `SQL`      | `Swift`        | `TeX`         | `TOML`         | `TypeScript` |
-| `Verilog`  | `Visual Basic` | `XML`         | `YAML `        |              |
+| `Verilog`  | `Visual Basic` | `XML`         | `YAML`         |              |
 
 With a guessing **accuracy higher than 90%**.
 
