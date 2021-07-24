@@ -1,5 +1,4 @@
-# Guesslang [![Build Status](https://travis-ci.org/yoeo/guesslang.svg?branch=master)](https://travis-ci.org/yoeo/guesslang) [![Documentation Status](https://readthedocs.org/projects/guesslang/badge/?version=latest)](http://guesslang.readthedocs.io/en/latest/?badge=latest)
-
+# Guesslang [![Build Status](https://github.com/yoeo/guesslang/actions/workflows/python-package.yml/badge.svg)](https://github.com/yoeo/guesslang/actions) [![Documentation Status](https://readthedocs.org/projects/guesslang/badge/?version=latest)](http://guesslang.readthedocs.io/en/latest/?badge=latest)
 
 ![Guesslang](docs/_static/images/guesslang-small.png)
 
