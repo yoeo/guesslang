@@ -98,10 +98,10 @@ available on [Microsoft website](https://www.microsoft.com/en-us/download/detail
 guesslang --help
 ```
 
-* Detect the programming language of ``/bin/which``:
+* Detect the programming language of ``/etc/bashrc`` configuration file:
 
 ```bash
-guesslang ~/.bashrc
+guesslang /etc/bashrc
 
 # ⟶ Programming language: Shell
 ```

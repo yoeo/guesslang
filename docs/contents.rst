@@ -123,6 +123,30 @@ Guesslang Python library helps you detect the programming language
 of a given text within your Python program.
 The Python classes are fully documentation here: :doc:`guesslang`.
 
+Here is a quick example:
+
+  .. code-block:: python
+
+    from guesslang import Guess
+
+
+    guess = Guess()
+
+    name = guess.language_name("""
+        % Quick sort
+
+        -module (recursion).
+        -export ([qsort/1]).
+
+        qsort([]) -> [];
+        qsort([Pivot|T]) ->
+              qsort([X || X <- T, X < Pivot])
+              ++ [Pivot] ++
+              qsort([X || X <- T, X >= Pivot]).
+    """)
+
+    print(name)  # ⟶ Erlang
+
 Command line tool
 ^^^^^^^^^^^^^^^^^
 
@@ -136,11 +160,11 @@ like ``some-command | guesslang``.
 
 Examples:
 
-* Detect the programming language of ``/bin/which`` software
+* Detect the programming language of ``/etc/bashrc`` configuration file
 
   .. code-block:: shell
 
-    guesslang /bin/which
+    guesslang /etc/bashrc
 
     # ⟶ Programming language: Shell
 
@@ -182,6 +206,35 @@ Examples:
     ' | guesslang
 
     # ⟶ Programming language: JavaScript
+
+* Show the programming language detection confidence score as probabilities:
+
+  .. code-block:: shell
+
+    echo "
+    def qsort(items):
+        if not items:
+            return []
+        else:
+            pivot = items[0]
+            less = [x for x in items if x <  pivot]
+            more = [x for x in items[1:] if x >= pivot]
+            return qsort(less) + [pivot] + qsort(more)
+
+
+    if __name__ == '__main__':
+        items = [1, 4, 2, 7, 9, 3]
+        print(f'Sorted: {qsort(items)}')
+
+    " | guesslang --probabilities
+
+    # Language name       Probability
+    # Python               70.87%
+    # Haskell               6.74%
+    # CoffeeScript          6.49%
+    # Groovy                1.31%
+    # Julia                 0.89%
+    # ...
 
 With Guesslang command line tool you can also
 show the detection **probabilities** for a given source code
