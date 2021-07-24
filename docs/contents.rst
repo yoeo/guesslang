@@ -289,7 +289,7 @@ References
   `Rosetta Code <https://rosettacode.org/wiki/Sorting_algorithms/Quicksort>`_.
 * Guesslang logo has been created with
   `Android Asset Studio <https://github.com/romannurik/AndroidAssetStudio>`_.
-* Guesslang — Copyright (c) 2020 Y. SOMDA,
+* Guesslang — Copyright (c) 2021 Y. SOMDA,
   `MIT Licence <https://github.com/yoeo/guesslang/blob/master/LICENSE>`_.
 
 Index and search

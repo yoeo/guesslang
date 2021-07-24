@@ -34,7 +34,7 @@ def read_version(base_module):
 
 
 project = 'Guesslang'
-copyright = '2020, Y. SOMDA'
+copyright = '2021, Y. SOMDA'
 author = 'Y. SOMDA'
 
 # The full version, including alpha/beta/rc tags

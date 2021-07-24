@@ -21,14 +21,19 @@ func main() {
 
 Guesslang supports `30 programming languages`:
 
-| Languages      |               |                    |        |              |
-|----------------|---------------|--------------------|--------|--------------|
-| `Batchfile`    | `C`           | `C#`               | `C++`  | `CSS`        |
-| `CoffeeScript` | `Erlang`      | `Go`               | `HTML` | `Haskell`    |
-| `Java`         | `JavaScript`  | `Jupyter Notebook` | `Lua`  | `Markdown`   |
-| `Matlab`       | `Objective-C` | `PHP`              | `Perl` | `PowerShell` |
-| `Python`       | `R`           | `Ruby`             | `Rust` | `SQL`        |
-| `Scala`        | `Shell`       | `Swift`            | `TeX`  | `TypeScript` |
+| Languages  |                |               |                |              |
+|------------|----------------|---------------|----------------|--------------|
+| `Assembly` | `Batchfile`    | `C`           | `C#`           | `C++`        |
+| `Clojure`  | `CMake`        | `COBOL`       | `CoffeeScript` | `CSS`        |
+| `CSV`      | `Dart`         | `DM`          | `Dockerfile`   | `Elixir`     |
+| `Erlang`   | `Fortran`      | `Go`          | `Groovy`       | `Haskell`    |
+| `HTML`     | `INI`          | `Java`        | `JavaScript`   | `JSON`       |
+| `Julia`    | `Kotlin`       | `Lisp`        | `Lua`          | `Makefile`   |
+| `Markdown` | `Matlab`       | `Objective-C` | `OCaml`        | `Pascal`     |
+| `Perl`     | `PHP`          | `PowerShell`  | `Prolog`       | `Python`     |
+| `R`        | `Ruby`         | `Rust`        | `Scala`        | `Shell`      |
+| `SQL`      | `Swift`        | `TeX`         | `TOML`         | `TypeScript` |
+| `Verilog`  | `Visual Basic` | `XML`         | `YAML `        |              |
 
 With a guessing **accuracy higher than 90%**.
 
@@ -96,7 +101,7 @@ guesslang --help
 * Detect the programming language of ``/bin/which``:
 
 ```bash
-guesslang /bin/which
+guesslang ~/.bashrc
 
 # ⟶ Programming language: Shell
 ```
@@ -138,11 +143,11 @@ if __name__ == '__main__':
 " | guesslang --probabilities
 
 # Language name       Probability
-#  Python               80.53%
-#  Batchfile             6.16%
-#  CoffeeScript          2.18%
-#  Markdown              1.66%
-#  JavaScript            1.47%
+# Python               70.87%
+# Haskell               6.74%
+# CoffeeScript          6.49%
+# Groovy                1.31%
+# Julia                 0.89%
 # ...
 ```
 
@@ -191,4 +196,4 @@ print(name)  # ⟶ Erlang
 * Example source codes used here retrieved from
   [Rosetta Code](https://rosettacode.org/wiki/Sorting_algorithms/Quicksort)
 
-* Guesslang — Copyright (c) 2020 Y. SOMDA, [MIT License](LICENSE)
+* Guesslang — Copyright (c) 2021 Y. SOMDA, [MIT License](LICENSE)
