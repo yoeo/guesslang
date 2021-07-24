@@ -91,7 +91,7 @@ Table of contents
 Install Guesslang
 -----------------
 
-Guesslang requires **Python 3.6 or later**.
+Guesslang requires **Python 3.7 or later**.
 
 Install from Pypi
 ^^^^^^^^^^^^^^^^^

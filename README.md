@@ -70,7 +70,7 @@ that pretty pastes source code.
 
 ## Installation
 
-* Python 3.6+ is required
+* Python 3.7+ is required
 
 * Install the latest stable version:
 
