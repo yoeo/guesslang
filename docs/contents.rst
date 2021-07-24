@@ -123,30 +123,6 @@ Guesslang Python library helps you detect the programming language
 of a given text within your Python program.
 The Python classes are fully documentation here: :doc:`guesslang`.
 
-Here is a quick example:
-
-  .. code-block:: python
-
-    from guesslang import Guess
-
-
-    guess = Guess()
-
-    name = guess.language_name("""
-        % Quick sort
-
-        -module (recursion).
-        -export ([qsort/1]).
-
-        qsort([]) -> [];
-        qsort([Pivot|T]) ->
-              qsort([X || X <- T, X < Pivot])
-              ++ [Pivot] ++
-              qsort([X || X <- T, X >= Pivot]).
-    """)
-
-    print(name)  # ⟶ Erlang
-
 Command line tool
 ^^^^^^^^^^^^^^^^^
 
