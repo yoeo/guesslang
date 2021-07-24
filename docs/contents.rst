@@ -3,7 +3,7 @@ Guesslang documentation
 
 Guesslang detects the programming language of a given source code.
 
-It supports **30** programming **languages** and detects
+It supports more than **50** programming **languages** and detects
 the correct programming language with more than **90% accuracy**.
 
 `Guesslang is an open source <https://github.com/yoeo/guesslang>`_
@@ -34,21 +34,31 @@ You can use Guesslang as a command line interface tool or as a Python module:
 
   print(language)  # --> Erlang
 
-Guesslang supports **30** of the **most popular** programming languages:
+Guesslang supports **54** of the **world's most popular** programming languages:
 
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Batchfile``    | ``C``           | ``C#``               | ``C++``  | ``CSS``        |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``CoffeeScript`` | ``Erlang``      | ``Go``               | ``HTML`` | ``Haskell``    |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Java``         | ``JavaScript``  | ``Jupyter Notebook`` | ``Lua``  | ``Markdown``   |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Matlab``       | ``Objective-C`` | ``PHP``              | ``Perl`` | ``PowerShell`` |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Python``       | ``R``           | ``Ruby``             | ``Rust`` | ``SQL``        |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Scala``        | ``Shell``       | ``Swift``            | ``TeX``  | ``TypeScript`` |
-+------------------+-----------------+----------------------+----------+----------------+
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``Assembly`` |  ``Batchfile``    |  ``C``           |  ``C#``           |  ``C++``        |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``Clojure``  |  ``CMake``        |  ``COBOL``       |  ``CoffeeScript`` |  ``CSS``        |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``CSV``      |  ``Dart``         |  ``DM``          |  ``Dockerfile``   |  ``Elixir``     |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``Erlang``   |  ``Fortran``      |  ``Go``          |  ``Groovy``       |  ``Haskell``    |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``HTML``     |  ``INI``          |  ``Java``        |  ``JavaScript``   |  ``JSON``       |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``Julia``    |  ``Kotlin``       |  ``Lisp``        |  ``Lua``          |  ``Makefile``   |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``Markdown`` |  ``Matlab``       |  ``Objective-C`` |  ``OCaml``        |  ``Pascal``     |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``Perl``     |  ``PHP``          |  ``PowerShell``  |  ``Prolog``       |  ``Python``     |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``R``        |  ``Ruby``         |  ``Rust``        |  ``Scala``        |  ``Shell``      |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``SQL``      |  ``Swift``        |  ``TeX``         |  ``TOML``         |  ``TypeScript`` |
++---------------+-------------------+------------------+-------------------+-----------------+
+|  ``Verilog``  |  ``Visual Basic`` |  ``XML``         |  ``YAML ``        |                 |
++---------------+-------------------+------------------+-------------------+-----------------+
 
 .. _end-description:
 
@@ -232,7 +242,7 @@ Accuracy
 
 Guesslang deep learning model performs very well.
 It was tested with 12,000 different source code files and correctly
-guessed the programming language of **93.82%** of them.
+guessed the programming language of **93.65%** of them.
 
 Most of the misclassifications come from few languages
 that are **compatible** with each other, like C/C++ or JavaScript/TypeScript.
@@ -243,9 +253,9 @@ That phenomenon is shown by the following confusion matrix:
 
   *— Lines: actual languages. Columns: guessed languages.*
 
-  🟥 *JavaScript compatible cluster*. 🟩 *C compatible cluster*.
+  🟪 *JavaScript/TypeScript cluster*. 🟥 *Java and JVM languages cluster*.
 
-  🟧 *Command line & Lua cluster*. 🟦 *Other languages...*.
+  🟩 *C/C++ cluster*. 🟧 *Command line cluster*. 🟦 *Other languages...*.
 
 Limitations
 ^^^^^^^^^^^
