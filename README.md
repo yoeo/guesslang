@@ -147,7 +147,6 @@ if __name__ == '__main__':
 #  CoffeeScript          5.32%
 #  Groovy                1.95%
 #  Markdown              0.93%
-#  Julia                 0.86%
 #  ...
 ```
 
