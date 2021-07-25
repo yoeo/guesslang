@@ -77,8 +77,7 @@ setup(
     install_requires=Path('requirements.txt').read_text(),
     zip_safe=False,
     include_package_data=True,
-    scripts=['bin/guesslang'],
-    # Test setup
+    entry_points={'console_scripts': ['guesslang = guesslang.__main__:main']},
     tests_require=Path('requirements-dev.txt').read_text(),
     setup_requires=['pytest-runner']
 )
