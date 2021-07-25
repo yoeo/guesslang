@@ -17,4 +17,4 @@ if 'TF_CPP_MIN_LOG_LEVEL' not in os.environ:
 from guesslang.guess import Guess, GuesslangError  # noqa: F401
 
 
-__version__ = '2.2.1.dev0'
+__version__ = '2.2.1'
