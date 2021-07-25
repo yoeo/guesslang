@@ -1,9 +1,19 @@
+
 Guesslang documentation
 =======================
 
-Guesslang detects the programming language of a given source code.
+.. image:: https://img.shields.io/badge/github-source%20code-blue?logo=github&logoColor=white
+  :alt: View on Github
+  :target: https://github.com/yoeo/guesslang/
+.. image:: https://img.shields.io/pypi/v/guesslang.svg
+  :target: https://pypi.python.org/pypi/guesslang
+  :alt: Pypi Version
+.. image:: https://img.shields.io/pypi/l/guesslang.svg
+  :target: https://pypi.python.org/pypi/guesslang/
+  :alt: License
 
-It supports **30** programming **languages** and detects
+Guesslang detects the programming language of a given source code.
+It supports more than **50** programming **languages** and detects
 the correct programming language with more than **90% accuracy**.
 
 `Guesslang is an open source <https://github.com/yoeo/guesslang>`_
@@ -34,21 +44,31 @@ You can use Guesslang as a command line interface tool or as a Python module:
 
   print(language)  # --> Erlang
 
-Guesslang supports **30** of the **most popular** programming languages:
+Guesslang supports **54** of the **world's most popular** programming languages:
 
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Batchfile``    | ``C``           | ``C#``               | ``C++``  | ``CSS``        |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``CoffeeScript`` | ``Erlang``      | ``Go``               | ``HTML`` | ``Haskell``    |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Java``         | ``JavaScript``  | ``Jupyter Notebook`` | ``Lua``  | ``Markdown``   |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Matlab``       | ``Objective-C`` | ``PHP``              | ``Perl`` | ``PowerShell`` |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Python``       | ``R``           | ``Ruby``             | ``Rust`` | ``SQL``        |
-+------------------+-----------------+----------------------+----------+----------------+
-| ``Scala``        | ``Shell``       | ``Swift``            | ``TeX``  | ``TypeScript`` |
-+------------------+-----------------+----------------------+----------+----------------+
++-----------+---------------+--------------+---------------+-------------+
+|  Assembly |  Batchfile    |  C           |  C#           |  C++        |
++-----------+---------------+--------------+---------------+-------------+
+|  Clojure  |  CMake        |  COBOL       |  CoffeeScript |  CSS        |
++-----------+---------------+--------------+---------------+-------------+
+|  CSV      |  Dart         |  DM          |  Dockerfile   |  Elixir     |
++-----------+---------------+--------------+---------------+-------------+
+|  Erlang   |  Fortran      |  Go          |  Groovy       |  Haskell    |
++-----------+---------------+--------------+---------------+-------------+
+|  HTML     |  INI          |  Java        |  JavaScript   |  JSON       |
++-----------+---------------+--------------+---------------+-------------+
+|  Julia    |  Kotlin       |  Lisp        |  Lua          |  Makefile   |
++-----------+---------------+--------------+---------------+-------------+
+|  Markdown |  Matlab       |  Objective-C |  OCaml        |  Pascal     |
++-----------+---------------+--------------+---------------+-------------+
+|  Perl     |  PHP          |  PowerShell  |  Prolog       |  Python     |
++-----------+---------------+--------------+---------------+-------------+
+|  R        |  Ruby         |  Rust        |  Scala        |  Shell      |
++-----------+---------------+--------------+---------------+-------------+
+|  SQL      |  Swift        |  TeX         |  TOML         |  TypeScript |
++-----------+---------------+--------------+---------------+-------------+
+|  Verilog  |  Visual Basic |  XML         |  YAML         |             |
++-----------+---------------+--------------+---------------+-------------+
 
 .. _end-description:
 
@@ -72,19 +92,13 @@ web-editor to automagically **highlight** source code:
   <center><i>— Chameledit in action.</i></center>
   <br><br>
 
-Table of contents
+Install Guesslang
 =================
 
-.. contents::
-  :local:
-
-Install Guesslang
------------------
-
-Guesslang requires **Python 3.6 or later**.
+Guesslang requires **Python 3.7 or later**.
 
 Install from Pypi
-^^^^^^^^^^^^^^^^^
+-----------------
 
 You can run the following command to install Guesslang on your system:
 
@@ -93,7 +107,7 @@ You can run the following command to install Guesslang on your system:
   pip install guesslang
 
 Install from source code
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 To install Guesslang from source code,
 just download the source code from https://github.com/yoeo/guesslang,
@@ -104,17 +118,17 @@ then run this command:
   pip install .
 
 Usage
------
+=====
 
 Python package
-^^^^^^^^^^^^^^
+--------------
 
 Guesslang Python library helps you detect the programming language
 of a given text within your Python program.
 The Python classes are fully documentation here: :doc:`guesslang`.
 
 Command line tool
-^^^^^^^^^^^^^^^^^
+-----------------
 
 On a terminal emulator, you can detect the programming language
 of a source code file by running ``guesslang /path/to/file``.
@@ -126,11 +140,11 @@ like ``some-command | guesslang``.
 
 Examples:
 
-* Detect the programming language of ``/bin/which`` software
+* Detect the programming language of ``/etc/bashrc`` configuration file
 
   .. code-block:: shell
 
-    guesslang /bin/which
+    guesslang /etc/bashrc
 
     # ⟶ Programming language: Shell
 
@@ -173,6 +187,35 @@ Examples:
 
     # ⟶ Programming language: JavaScript
 
+* Show the programming language detection confidence score as probabilities:
+
+  .. code-block:: shell
+
+    echo "
+    def qsort(items):
+        if not items:
+            return []
+        else:
+            pivot = items[0]
+            less = [x for x in items if x <  pivot]
+            more = [x for x in items[1:] if x >= pivot]
+            return qsort(less) + [pivot] + qsort(more)
+
+
+    if __name__ == '__main__':
+        items = [1, 4, 2, 7, 9, 3]
+        print(f'Sorted: {qsort(items)}')
+
+    " | guesslang --probabilities
+
+    # Language name       Probability
+    #  Python               74.80%
+    #  Haskell               6.73%
+    #  CoffeeScript          5.32%
+    #  Groovy                1.95%
+    #  Markdown              0.93%
+    #  ...
+
 With Guesslang command line tool you can also
 show the detection **probabilities** for a given source code
 and even **train** your **custom** programming language detection model.
@@ -180,14 +223,14 @@ and even **train** your **custom** programming language detection model.
 Run ``guesslang --help`` to see all the available options.
 
 How does Guesslang guess?
--------------------------
+=========================
 
 Deep learning Model
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 Guesslang uses a deep learning `Tensorflow <https://www.tensorflow.org/>`_
-model built with more than **1,000,000** unique source code files,
-from over **100,000** different projects.
+model built with **1,900,000** unique source code files,
+randomly picked from **170,000** public Github projects.
 
 Guesslang model is a Deep Neural Network classifier
 combined with Linear classifier.
@@ -195,19 +238,13 @@ The model's hyperparameters have been fine tuned to have both
 the best **performances** and the best **generalization**.
 
 Training
-^^^^^^^^
+--------
 
 Having a data set with a **very large** number of **diverse** examples
 is essential to correctly train a model.
-
-For Guesslang we built a large dataset using:
-
-* **1 080 000** unique source code **files**
-* randomly picked from **101 871** public open source Github **repositories**.
-
-This large dataset built with
-`GuesslangTools <https://github.com/yoeo/guesslangtools>`_,
-is used to train, evaluate and test Guesslang's deep learning model.
+This large dataset is built with
+`GuesslangTools <https://github.com/yoeo/guesslangtools>`_.
+It is used to train, evaluate and test Guesslang's deep learning model.
 
 To avoid `overfitting <https://en.wikipedia.org/wiki/Overfitting>`_,
 each repositories is **strictly** associated with only one of
@@ -228,62 +265,69 @@ The test in the other hand is done after the last training and evaluation steps
 to ensure that the final model performs well.
 
 Accuracy
-^^^^^^^^
+--------
 
-Guesslang deep learning model performs very well.
-It was tested with 12,000 different source code files and correctly
-guessed the programming language of **93.82%** of them.
-
-Most of the misclassifications come from few languages
-that are **compatible** with each other, like C/C++ or JavaScript/TypeScript.
-
-That phenomenon is shown by the following confusion matrix:
-
-.. figure:: _static/images/confusion.png
-
-  *— Lines: actual languages. Columns: guessed languages.*
-
-  🟥 *JavaScript compatible cluster*. 🟩 *C compatible cluster*.
-
-  🟧 *Command line & Lua cluster*. 🟦 *Other languages...*.
+Guesslang deep learning model performs very well, with **93.45% accuracy**.
+This accuracy was calculated by testing Guesslang
+with 230,000 distinct source files.
 
 Limitations
-^^^^^^^^^^^
+-----------
 
-As said earlier, Guesslang may misclassify source code from languages
-that are **really close** to each other like C/C++ and JavaScript/TypeScript.
+Guesslang accuracy is very high but it is not perfect.
 
-This limitation was expected because a valid C source code is
+Some challenging source codes that are at the border between two languages
+can fool Guesslang.
+In fact, a valid C source code is
 `almost always <https://en.wikipedia.org/wiki/Compatibility_of_C_and_C%2B%2B#Constructs_valid_in_C_but_not_in_C++>`_
 a valid C++ code,
 and a valid JavaScript source code
 `is always <http://channel9.msdn.com/posts/Anders-Hejlsberg-Introducing-TypeScript>`_
 a valid TypeScript code.
 
+This phenomenon is shown by Guesslang's
+`confusion matrix <https://en.wikipedia.org/wiki/Confusion_matrix>`_:
+
+.. figure:: _static/images/confusion.png
+
+  — Lines: actual languages. Columns: guessed languages.
+
+.. raw:: html
+
+  <center>
+    <span class="gl-confusion">🟪 JavaScript/TypeScript confusion.</span>
+    <span class="gl-confusion">🟥 Java/Groovy confusion.</span>
+    <span class="gl-confusion">🟩 C/C++ confusion.</span>
+    <span class="gl-confusion">🟧 Shell/Batchfile confusion.</span>
+    <span class="gl-confusion">🟦 Languages with low to no confusion.</span>
+  </center>
+  <br>
+  <br>
+
+
 In addition to that, Guesslang may not guess the correct
 programming languages of **very small** code snippets.
-They don't provide enough insights for accurate language classification.
+Small snippets don't always provide enough insights to accurately
+guess the programming language.
 
-For example, ``print("Hello world")`` is a valid statement in several
-programming languages like Python, Scala, Ruby, Lua, Perl, etc...
+For example, ``print("Hello world")`` is a valid code snippet in several
+programming languages including Python, Scala, Ruby, Lua, Perl, etc...
 
 References
-----------
+==========
 
 * `Guesslang source code is on Github <https://github.com/yoeo/guesslang>`_.
 * Guesslang is developped with `Tensorflow <https://www.tensorflow.org/>`_
   machine learning framework.
 * Use `GuesslangTools <https://github.com/yoeo/guesslangtools>`_
   to build your own training dataset.
-* The source codes used as examples are from
+* The example codes used in this documentation come from
   `Rosetta Code <https://rosettacode.org/wiki/Sorting_algorithms/Quicksort>`_.
 * Guesslang logo has been created with
-  `Android Asset Studio <https://github.com/romannurik/AndroidAssetStudio>`_.
-* Guesslang — Copyright (c) 2020 Y. SOMDA,
+  `Android Asset Studio <https://github.com/romannurik/AndroidAssetStudio>`_
+  and `Eduardo Tunni's Warnes font <https://fonts.google.com/specimen/Warnes>`_.
+* Guesslang — Copyright (c) 2021 Y. SOMDA,
   `MIT Licence <https://github.com/yoeo/guesslang/blob/master/LICENSE>`_.
-
-Index and search
-----------------
 
 * :ref:`genindex`
 * :ref:`modindex`

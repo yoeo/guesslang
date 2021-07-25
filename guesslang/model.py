@@ -120,6 +120,7 @@ def test(
     values = {language: 0 for language in mapping.values()}
     matches = {language: deepcopy(values) for language in values}
 
+    LOGGER.debug('Test the model')
     input_function = _build_input_fn(data_root_dir, ModeKeys.PREDICT)
     for test_item in input_function():
         content = test_item[0]

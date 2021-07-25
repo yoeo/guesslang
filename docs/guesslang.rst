@@ -1,5 +1,6 @@
-Guesslang package
-=================
+
+Guesslang package reference
+===========================
 
 .. toctree::
    :maxdepth: 2

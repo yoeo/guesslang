@@ -19,6 +19,8 @@ from pathlib import Path
 import re
 import sys
 
+import sphinx_rtd_theme
+
 
 # Add Guesslang path for autodoc
 sys.path.insert(0, str(Path(__file__).parent.parent.absolute()))
@@ -34,7 +36,7 @@ def read_version(base_module):
 
 
 project = 'Guesslang'
-copyright = '2020, Y. SOMDA'
+copyright = '2021, Y. SOMDA'
 author = 'Y. SOMDA'
 
 # The full version, including alpha/beta/rc tags
@@ -46,7 +48,7 @@ release = read_version('guesslang')
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc', 'sphinx_rtd_theme']
 autodoc_mock_imports = ['tensorflow']
 master_doc = 'index'
 
@@ -64,20 +66,19 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
-
-html_theme_options = {
-    'logo': 'images/guesslang.png',
+html_logo = '_static/images/guesslang.png'
+html_favicon = '_static/images/favicon.png'
+html_css_files = ['css/custom.css']
+html_context = {
+    'display_github': True,
     'github_user': 'yoeo',
     'github_repo': 'guesslang',
-    'description': 'A programming language detection tool',
-    'logo_name': True,
-    'travis_button': True,
-    'sidebar_collapse': False,
+    'github_version': 'master/docs/',
 }
+html_theme_options = {'collapse_navigation': False}
