@@ -3,6 +3,7 @@ pytest
 
 # Documentation
 Sphinx
+sphinx-rtd-theme
 
 # Code checkers
 flake8
