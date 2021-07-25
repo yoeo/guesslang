@@ -229,8 +229,8 @@ Deep learning Model
 -------------------
 
 Guesslang uses a deep learning `Tensorflow <https://www.tensorflow.org/>`_
-model built with more than **a million** unique source code files,
-from over **a thousand** different projects.
+model built with **1,900,000** unique source code files,
+randomly picked from **170,000** distinct public Github projects.
 
 Guesslang model is a Deep Neural Network classifier
 combined with Linear classifier.
@@ -242,15 +242,9 @@ Training
 
 Having a data set with a **very large** number of **diverse** examples
 is essential to correctly train a model.
-
-For Guesslang we built a large dataset using:
-
-* **1,776,709** unique source code **files**
-* randomly picked from **170,273** public open source Github **repositories**.
-
-This large dataset built with
-`GuesslangTools <https://github.com/yoeo/guesslangtools>`_,
-is used to train, evaluate and test Guesslang's deep learning model.
+This large dataset is built with
+`GuesslangTools <https://github.com/yoeo/guesslangtools>`_.
+It is used to train, evaluate and test Guesslang's deep learning model.
 
 To avoid `overfitting <https://en.wikipedia.org/wiki/Overfitting>`_,
 each repositories is **strictly** associated with only one of
@@ -274,11 +268,11 @@ Accuracy
 --------
 
 Guesslang deep learning model performs very well.
-It was tested with 12,000 different source code files and correctly
-guessed the programming language of **93.65%** of them.
+It was tested with 230,000 distinct source code files and correctly
+guessed the programming language of **93.45%** of them.
 
 Most of the misclassifications come from few languages
-that are **compatible** with each other, like C/C++ or JavaScript/TypeScript.
+that are **really close** to each other, like C/C++ or JavaScript/TypeScript.
 
 That phenomenon is shown by the following confusion matrix:
 
@@ -305,10 +299,10 @@ a valid TypeScript code.
 
 In addition to that, Guesslang may not guess the correct
 programming languages of **very small** code snippets.
-They don't provide enough insights for accurate language classification.
+They don't provide enough insights to accurately guess the language.
 
-For example, ``print("Hello world")`` is a valid statement in several
-programming languages like Python, Scala, Ruby, Lua, Perl, etc...
+For example, ``print("Hello world")`` is a valid code snippet in several
+programming languages including Python, Scala, Ruby, Lua, Perl, etc...
 
 References
 ==========
