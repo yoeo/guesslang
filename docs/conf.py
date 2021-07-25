@@ -76,9 +76,9 @@ html_logo = '_static/images/guesslang.png'
 html_favicon = '_static/images/favicon.png'
 html_css_files = ['css/custom.css']
 html_context = {
-  'display_github': True,
-  'github_user': 'yoeo',
-  'github_repo': 'guesslang',
-  'github_version': 'master/docs/',
+    'display_github': True,
+    'github_user': 'yoeo',
+    'github_repo': 'guesslang',
+    'github_version': 'master/docs/',
 }
 html_theme_options = {'collapse_navigation': False}
