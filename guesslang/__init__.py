@@ -7,8 +7,8 @@ of a given source code.
 import os
 
 
-# Do not let Tensorflow print its numerous warning messages
-# on startup. Unless the user explicitly set Tensorflow logging level.
+# Do not let Tensorflow print its numerous warning messages on startup.
+# Unless the user asked to see them by setting Tensorflow logging level.
 if 'TF_CPP_MIN_LOG_LEVEL' not in os.environ:
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
