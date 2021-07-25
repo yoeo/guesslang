@@ -8,8 +8,7 @@ import os
 
 
 # Do not let Tensorflow print its numerous warning messages
-# when importing the module.
-# Unless the user explicitly set Tensorflow logging level.
+# on startup. Unless the user explicitly set Tensorflow logging level.
 if 'TF_CPP_MIN_LOG_LEVEL' not in os.environ:
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
