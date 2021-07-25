@@ -4,3 +4,10 @@ h1 {
 h2 {
   font-size: 125% !important;
 }
+.gl-confusion {
+  display: inline-block;
+  font-style: italic;
+}
+.gl-confusion::first-letter {
+  font-style: normal;
+}

@@ -267,39 +267,48 @@ to ensure that the final model performs well.
 Accuracy
 --------
 
-Guesslang deep learning model performs very well.
-It was tested with 230,000 distinct source code files and correctly
-guessed the programming language of **93.45%** of them.
-
-Most of the misclassifications come from few languages
-that are **really close** to each other, like C/C++ or JavaScript/TypeScript.
-
-That phenomenon is shown by the following confusion matrix:
-
-.. figure:: _static/images/confusion.png
-
-  *— Lines: actual languages. Columns: guessed languages.*
-
-  🟪 *JavaScript/TypeScript cluster*. 🟥 *Java and JVM languages cluster*.
-
-  🟩 *C/C++ cluster*. 🟧 *Command line cluster*. 🟦 *Other languages...*.
+Guesslang deep learning model performs very well, with **93.45% accuracy**.
+This accuracy was calculated by testing Guesslang
+with 230,000 distinct source files.
 
 Limitations
 -----------
 
-As said earlier, Guesslang may misclassify source code from languages
-that are **really close** to each other like C/C++ and JavaScript/TypeScript.
+Guesslang accuracy is very high but it is not perfect.
 
-This limitation was expected because a valid C source code is
+Some challenging source codes that are at the border between two languages
+can fool Guesslang.
+In fact, a valid C source code is
 `almost always <https://en.wikipedia.org/wiki/Compatibility_of_C_and_C%2B%2B#Constructs_valid_in_C_but_not_in_C++>`_
 a valid C++ code,
 and a valid JavaScript source code
 `is always <http://channel9.msdn.com/posts/Anders-Hejlsberg-Introducing-TypeScript>`_
 a valid TypeScript code.
 
+This phenomenon is shown by Guesslang's
+`confusion matrix <https://en.wikipedia.org/wiki/Confusion_matrix>`_:
+
+.. figure:: _static/images/confusion.png
+
+  — Lines: actual languages. Columns: guessed languages.
+
+.. raw:: html
+
+  <center>
+    <span class="gl-confusion">🟪 JavaScript/TypeScript confusion.</span>
+    <span class="gl-confusion">🟥 Java/Groovy confusion.</span>
+    <span class="gl-confusion">🟩 C/C++ confusion.</span>
+    <span class="gl-confusion">🟧 Shell/Batchfile confusion.</span>
+    <span class="gl-confusion">🟦 Languages with low to no confusion.</span>
+  </center>
+  <br>
+  <br>
+
+
 In addition to that, Guesslang may not guess the correct
 programming languages of **very small** code snippets.
-They don't provide enough insights to accurately guess the language.
+Small snippets don't always provide enough insights to accurately
+guess the programming language.
 
 For example, ``print("Hello world")`` is a valid code snippet in several
 programming languages including Python, Scala, Ruby, Lua, Perl, etc...
