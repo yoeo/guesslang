@@ -229,8 +229,8 @@ Deep learning Model
 -------------------
 
 Guesslang uses a deep learning `Tensorflow <https://www.tensorflow.org/>`_
-model built with more than **1,000,000** unique source code files,
-from over **100,000** different projects.
+model built with more than **a million** unique source code files,
+from over **a thousand** different projects.
 
 Guesslang model is a Deep Neural Network classifier
 combined with Linear classifier.
@@ -245,8 +245,8 @@ is essential to correctly train a model.
 
 For Guesslang we built a large dataset using:
 
-* **1 080 000** unique source code **files**
-* randomly picked from **101 871** public open source Github **repositories**.
+* **1,776,709** unique source code **files**
+* randomly picked from **170,273** public open source Github **repositories**.
 
 This large dataset built with
 `GuesslangTools <https://github.com/yoeo/guesslangtools>`_,
