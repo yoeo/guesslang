@@ -230,7 +230,7 @@ Deep learning Model
 
 Guesslang uses a deep learning `Tensorflow <https://www.tensorflow.org/>`_
 model built with **1,900,000** unique source code files,
-randomly picked from **170,000** distinct public Github projects.
+randomly picked from **170,000** public Github projects.
 
 Guesslang model is a Deep Neural Network classifier
 combined with Linear classifier.
@@ -312,7 +312,7 @@ References
   machine learning framework.
 * Use `GuesslangTools <https://github.com/yoeo/guesslangtools>`_
   to build your own training dataset.
-* The source codes used as examples are from
+* The example codes used in this documentation come from
   `Rosetta Code <https://rosettacode.org/wiki/Sorting_algorithms/Quicksort>`_.
 * Guesslang logo has been created with
   `Android Asset Studio <https://github.com/romannurik/AndroidAssetStudio>`_
