@@ -1,8 +1,18 @@
+
 Guesslang documentation
 =======================
 
-Guesslang detects the programming language of a given source code.
+.. image:: https://img.shields.io/badge/github-source%20code-blue?logo=github&logoColor=white
+  :alt: View on Github
+  :target: https://github.com/yoeo/guesslang/
+.. image:: https://img.shields.io/pypi/v/guesslang.svg
+  :target: https://pypi.python.org/pypi/guesslang
+  :alt: Pypi Version
+.. image:: https://img.shields.io/pypi/l/guesslang.svg
+  :target: https://pypi.python.org/pypi/guesslang/
+  :alt: License
 
+Guesslang detects the programming language of a given source code.
 It supports more than **50** programming **languages** and detects
 the correct programming language with more than **90% accuracy**.
 
@@ -36,29 +46,29 @@ You can use Guesslang as a command line interface tool or as a Python module:
 
 Guesslang supports **54** of the **world's most popular** programming languages:
 
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``Assembly`` |  ``Batchfile``    |  ``C``           |  ``C#``           |  ``C++``        |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``Clojure``  |  ``CMake``        |  ``COBOL``       |  ``CoffeeScript`` |  ``CSS``        |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``CSV``      |  ``Dart``         |  ``DM``          |  ``Dockerfile``   |  ``Elixir``     |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``Erlang``   |  ``Fortran``      |  ``Go``          |  ``Groovy``       |  ``Haskell``    |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``HTML``     |  ``INI``          |  ``Java``        |  ``JavaScript``   |  ``JSON``       |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``Julia``    |  ``Kotlin``       |  ``Lisp``        |  ``Lua``          |  ``Makefile``   |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``Markdown`` |  ``Matlab``       |  ``Objective-C`` |  ``OCaml``        |  ``Pascal``     |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``Perl``     |  ``PHP``          |  ``PowerShell``  |  ``Prolog``       |  ``Python``     |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``R``        |  ``Ruby``         |  ``Rust``        |  ``Scala``        |  ``Shell``      |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``SQL``      |  ``Swift``        |  ``TeX``         |  ``TOML``         |  ``TypeScript`` |
-+---------------+-------------------+------------------+-------------------+-----------------+
-|  ``Verilog``  |  ``Visual Basic`` |  ``XML``         |  ``YAML``         |                 |
-+---------------+-------------------+------------------+-------------------+-----------------+
++-----------+---------------+--------------+---------------+-------------+
+|  Assembly |  Batchfile    |  C           |  C#           |  C++        |
++-----------+---------------+--------------+---------------+-------------+
+|  Clojure  |  CMake        |  COBOL       |  CoffeeScript |  CSS        |
++-----------+---------------+--------------+---------------+-------------+
+|  CSV      |  Dart         |  DM          |  Dockerfile   |  Elixir     |
++-----------+---------------+--------------+---------------+-------------+
+|  Erlang   |  Fortran      |  Go          |  Groovy       |  Haskell    |
++-----------+---------------+--------------+---------------+-------------+
+|  HTML     |  INI          |  Java        |  JavaScript   |  JSON       |
++-----------+---------------+--------------+---------------+-------------+
+|  Julia    |  Kotlin       |  Lisp        |  Lua          |  Makefile   |
++-----------+---------------+--------------+---------------+-------------+
+|  Markdown |  Matlab       |  Objective-C |  OCaml        |  Pascal     |
++-----------+---------------+--------------+---------------+-------------+
+|  Perl     |  PHP          |  PowerShell  |  Prolog       |  Python     |
++-----------+---------------+--------------+---------------+-------------+
+|  R        |  Ruby         |  Rust        |  Scala        |  Shell      |
++-----------+---------------+--------------+---------------+-------------+
+|  SQL      |  Swift        |  TeX         |  TOML         |  TypeScript |
++-----------+---------------+--------------+---------------+-------------+
+|  Verilog  |  Visual Basic |  XML         |  YAML         |             |
++-----------+---------------+--------------+---------------+-------------+
 
 .. _end-description:
 
@@ -82,19 +92,13 @@ web-editor to automagically **highlight** source code:
   <center><i>— Chameledit in action.</i></center>
   <br><br>
 
-Table of contents
-=================
-
-.. contents::
-  :local:
-
 Install Guesslang
------------------
+=================
 
 Guesslang requires **Python 3.7 or later**.
 
 Install from Pypi
-^^^^^^^^^^^^^^^^^
+-----------------
 
 You can run the following command to install Guesslang on your system:
 
@@ -103,7 +107,7 @@ You can run the following command to install Guesslang on your system:
   pip install guesslang
 
 Install from source code
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 To install Guesslang from source code,
 just download the source code from https://github.com/yoeo/guesslang,
@@ -114,17 +118,17 @@ then run this command:
   pip install .
 
 Usage
------
+=====
 
 Python package
-^^^^^^^^^^^^^^
+--------------
 
 Guesslang Python library helps you detect the programming language
 of a given text within your Python program.
 The Python classes are fully documentation here: :doc:`guesslang`.
 
 Command line tool
-^^^^^^^^^^^^^^^^^
+-----------------
 
 On a terminal emulator, you can detect the programming language
 of a source code file by running ``guesslang /path/to/file``.
@@ -219,10 +223,10 @@ and even **train** your **custom** programming language detection model.
 Run ``guesslang --help`` to see all the available options.
 
 How does Guesslang guess?
--------------------------
+=========================
 
 Deep learning Model
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 Guesslang uses a deep learning `Tensorflow <https://www.tensorflow.org/>`_
 model built with more than **1,000,000** unique source code files,
@@ -234,7 +238,7 @@ The model's hyperparameters have been fine tuned to have both
 the best **performances** and the best **generalization**.
 
 Training
-^^^^^^^^
+--------
 
 Having a data set with a **very large** number of **diverse** examples
 is essential to correctly train a model.
@@ -267,7 +271,7 @@ The test in the other hand is done after the last training and evaluation steps
 to ensure that the final model performs well.
 
 Accuracy
-^^^^^^^^
+--------
 
 Guesslang deep learning model performs very well.
 It was tested with 12,000 different source code files and correctly
@@ -287,7 +291,7 @@ That phenomenon is shown by the following confusion matrix:
   🟩 *C/C++ cluster*. 🟧 *Command line cluster*. 🟦 *Other languages...*.
 
 Limitations
-^^^^^^^^^^^
+-----------
 
 As said earlier, Guesslang may misclassify source code from languages
 that are **really close** to each other like C/C++ and JavaScript/TypeScript.
@@ -307,7 +311,7 @@ For example, ``print("Hello world")`` is a valid statement in several
 programming languages like Python, Scala, Ruby, Lua, Perl, etc...
 
 References
-----------
+==========
 
 * `Guesslang source code is on Github <https://github.com/yoeo/guesslang>`_.
 * Guesslang is developped with `Tensorflow <https://www.tensorflow.org/>`_
@@ -317,12 +321,10 @@ References
 * The source codes used as examples are from
   `Rosetta Code <https://rosettacode.org/wiki/Sorting_algorithms/Quicksort>`_.
 * Guesslang logo has been created with
-  `Android Asset Studio <https://github.com/romannurik/AndroidAssetStudio>`_.
+  `Android Asset Studio <https://github.com/romannurik/AndroidAssetStudio>`_
+  and `Eduardo Tunni's Warnes font <https://fonts.google.com/specimen/Warnes>`_.
 * Guesslang — Copyright (c) 2021 Y. SOMDA,
   `MIT Licence <https://github.com/yoeo/guesslang/blob/master/LICENSE>`_.
-
-Index and search
-----------------
 
 * :ref:`genindex`
 * :ref:`modindex`
