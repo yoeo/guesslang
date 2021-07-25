@@ -142,12 +142,13 @@ if __name__ == '__main__':
 " | guesslang --probabilities
 
 # Language name       Probability
-# Python               70.87%
-# Haskell               6.74%
-# CoffeeScript          6.49%
-# Groovy                1.31%
-# Julia                 0.89%
-# ...
+#  Python               74.80%
+#  Haskell               6.73%
+#  CoffeeScript          5.32%
+#  Groovy                1.95%
+#  Markdown              0.93%
+#  Julia                 0.86%
+#  ...
 ```
 
 ## Guesslang Python package
