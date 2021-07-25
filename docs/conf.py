@@ -19,7 +19,6 @@ from pathlib import Path
 import re
 import sys
 
-
 import sphinx_rtd_theme
 
 
