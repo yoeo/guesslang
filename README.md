@@ -18,7 +18,7 @@ func main() {
 # ⟶ Programming language: Go
 ```
 
-Guesslang supports `30 programming languages`:
+Guesslang supports `54 programming languages`:
 
 | Languages  |                |               |                |              |
 |------------|----------------|---------------|----------------|--------------|
