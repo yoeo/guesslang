@@ -19,8 +19,6 @@ from pathlib import Path
 import re
 import sys
 
-import sphinx_rtd_theme
-
 
 # Add Guesslang path for autodoc
 sys.path.insert(0, str(Path(__file__).parent.parent.absolute()))
