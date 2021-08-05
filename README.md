@@ -62,7 +62,7 @@ that pretty pastes source code.
   https://guesslang.readthedocs.io/en/latest/
 
 * Guesslang language detection explained here
-  https://guesslang.readthedocs.io/en/latest/how.html
+  https://guesslang.readthedocs.io/en/latest/contents.html#how-does-guesslang-guess
 
 * Guesslang is based on [Tensorflow](https://github.com/tensorflow/tensorflow)
   machine learning framework
