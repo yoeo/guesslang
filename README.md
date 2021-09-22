@@ -38,6 +38,15 @@ With a guessing **accuracy higher than 90%**.
 
 ## Apps powered by Guesslang
 
+#### Microsoft Visual Studio Code, automatic language detection
+
+[Visual Studio Code](https://code.visualstudio.com/)
+detects the programming language of the source code
+that you paste into the editor
+[using Guesslang machine learning model](https://code.visualstudio.com/updates/v1_60#_automatic-language-detection).
+
+![](docs/_static/images/vscode.gif)
+
 #### Chameledit
 
 [Chameledit](https://github.com/yoeo/chameledit) is a simple web-editor
@@ -45,16 +54,11 @@ that automatically highlights your code.
 
 ![](docs/_static/images/chameledit.gif)
 
-##### Pasta
+##### Other projects...
 
-[Pasta](https://github.com/yoeo/pasta) is a [Slack](https://slack.com) bot
-that pretty pastes source code.
-
-[Watch the demo here](https://github.com/yoeo/pasta)
-
-#### GG
-
-[GG](https://github.com/yoeo/gg) is a silly guessing game.
+* [Pasta](https://github.com/yoeo/pasta), the [Slack](https://slack.com)
+  bot that pretty-pastes source code.
+* [GG](https://github.com/yoeo/gg), a silly guessing game.
 
 ## Documentation
 
