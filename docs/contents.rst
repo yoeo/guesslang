@@ -72,25 +72,26 @@ Guesslang supports **54** of the **world's most popular** programming languages:
 
 .. _end-description:
 
-Guesslang is used by cool projects like the guessing game
-`GG <https://github.com/yoeo/gg>`_ or
-the `Slack <https://slack.com>`_ bot `Pasta <https://github.com/yoeo/pasta>`_.
+Guesslang is used by
+`Visual Studio Code <https://code.visualstudio.com/>`_ to
+`automatically detect the programming language <https://code.visualstudio.com/updates/v1_60#_automatic-language-detection>`_
+of the source code that you paste into the editor:
 
-It is also used by the `Chameledit <https://github.com/yoeo/chameledit>`_,
-web-editor to automagically **highlight** source code:
+.. figure:: _static/images/vscode.gif
+  :alt: VSCode language detection
+  :align: center
 
-.. raw:: html
+  Visual Studio Code automatic language detection.
 
-  <div>
-    <video width="100%" autoplay loop>
-      <source src="_static/videos/chameledit.webm" type="video/webm">
-      <source src="_static/videos/chameledit.mp4" type="video/mp4">
-      Video not supported by your browser :-(
-    </video>
-  </div>
+Guesslang is used by other projects including:
 
-  <center><i>— Chameledit in action.</i></center>
-  <br><br>
+* `Chameledit <https://github.com/yoeo/chameledit>`_ a web-editor
+  that auto-highlights code,
+
+* `Pasta <https://github.com/yoeo/pasta>`_ a `Slack <https://slack.com>`_ bot
+  that pretty-pastes code,
+
+* `GG <https://github.com/yoeo/gg>`_ a guessing game.
 
 Install Guesslang
 =================
