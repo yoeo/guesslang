@@ -1,6 +1,8 @@
 """Machine learning model"""
 
 from copy import deepcopy
+import os
+import functools
 import logging
 from operator import itemgetter
 from pathlib import Path
@@ -11,6 +13,7 @@ from typing import List, Tuple, Dict, Any, Callable
 import tensorflow as tf
 from tensorflow.estimator import ModeKeys, Estimator
 from tensorflow.python.training.tracking.tracking import AutoTrackable
+import tensorflow_text as text
 
 
 LOGGER = logging.getLogger(__name__)
@@ -98,15 +101,22 @@ def train(estimator: Estimator, data_root_dir: str, max_steps: int) -> Any:
     return training_metrics
 
 
-def save(estimator: Estimator, saved_model_dir: str) -> None:
+def save(estimator: Estimator, saved_model_dir: str, ckpt_path:str=None, is_tflite:bool=False) -> None:
     """Save a Tensorflow estimator"""
     with TemporaryDirectory() as temporary_model_base_dir:
         export_dir = estimator.export_saved_model(
-            temporary_model_base_dir, _serving_input_receiver_fn
+            temporary_model_base_dir, functools.partial(_serving_input_receiver_fn, is_tflite=is_tflite),
+            checkpoint_path=ckpt_path
         )
-
         Path(saved_model_dir).mkdir(exist_ok=True)
         export_path = Path(export_dir.decode()).absolute()
+        if is_tflite:
+            converter = tf.lite.TFLiteConverter.from_saved_model(export_dir, signature_keys=['predict'])
+            converter.optimizations=[tf.lite.Optimize.DEFAULT]
+            converter.inference_type=tf.float32
+            converter.target_spec.supported_ops=[tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]
+            model = converter.convert()
+            tf.io.write_file(os.path.join(saved_model_dir, 'guesslang.tflite'), model)
         for path in export_path.glob('*'):
             shutil.move(str(path), saved_model_dir)
 
@@ -178,12 +188,17 @@ def _build_input_fn(
     return input_function
 
 
-def _serving_input_receiver_fn() -> tf.estimator.export.ServingInputReceiver:
+def _serving_input_receiver_fn(is_tflite=False) -> tf.estimator.export.ServingInputReceiver:
     """Function to serve model for predictions."""
-
-    content = tf.compat.v1.placeholder(tf.string, [None])
-    receiver_tensors = {'content': content}
-    features = {'content': tf.map_fn(_preprocess_text, content)}
+    if is_tflite:
+        content = tf.compat.v1.placeholder(tf.string, [HyperParameter.NB_TOKENS+1])
+        length = tf.compat.v1.placeholder(tf.int32, [])
+        receiver_tensors = {'content': content, 'length':length}
+        features = {'content': _preprocess_text_tflite(content, length)}
+    else:
+        content = tf.compat.v1.placeholder(tf.string, [None])
+        receiver_tensors = {'content': content}
+        features = {'content': _preprocess_text(content)}
 
     return tf.estimator.export.ServingInputReceiver(
         receiver_tensors=receiver_tensors,
@@ -209,9 +224,13 @@ def _preprocess(
 
 def _preprocess_text(data: tf.Tensor) -> tf.Tensor:
     """Feature engineering"""
-    padding = tf.constant(['']*HyperParameter.NB_TOKENS)
     data = tf.strings.bytes_split(data)
-    data = tf.strings.ngrams(data, HyperParameter.N_GRAM)
-    data = tf.concat((data, padding), axis=0)
-    data = data[:HyperParameter.NB_TOKENS]
-    return data
+    data = text.ngrams(data, HyperParameter.N_GRAM, reduction_type=text.Reduction.STRING_JOIN)
+    return data.to_tensor(shape=(data.shape[0], HyperParameter.NB_TOKENS))
+
+
+def _preprocess_text_tflite(data: tf.Tensor, length: tf.Tensor) -> tf.Tensor:
+    processed_data, unprocessed_data = tf.split(data, [length, HyperParameter.NB_TOKENS-length+1], num=2, axis=0)
+    processed_data = text.ngrams(processed_data, HyperParameter.N_GRAM, reduction_type=text.Reduction.STRING_JOIN)
+    return tf.expand_dims(tf.concat([processed_data, unprocessed_data], axis=0), axis=0)
+     

@@ -7,6 +7,8 @@ from statistics import mean, stdev
 from tempfile import TemporaryDirectory
 from typing import List, Tuple, Optional
 
+from tensorflow_estimator.python.estimator.api._v2 import estimator
+
 from guesslang import model
 
 
@@ -163,6 +165,10 @@ class Guess:
         threshold = mean(probabilities) + 2*stdev(probabilities)
         predicted_language_probability = max(probabilities)
         return predicted_language_probability > threshold
+
+    def export(self, model_logs_dir, ckpt_path, tflite=False):
+        estimator = model.build(model_logs_dir, list(self._extension_map))
+        model.save(estimator, self._saved_model_dir, ckpt_path, tflite)
 
 
 class GuesslangError(Exception):
