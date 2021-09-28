@@ -7,8 +7,6 @@ from statistics import mean, stdev
 from tempfile import TemporaryDirectory
 from typing import List, Tuple, Optional
 
-from tensorflow_estimator.python.estimator.api._v2 import estimator
-
 from guesslang import model
 
 
