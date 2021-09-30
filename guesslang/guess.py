@@ -165,11 +165,12 @@ class Guess:
         return predicted_language_probability > threshold
 
     def export(self,
-               model_logs_dir: str,
                ckpt_path: str,
                tflite: bool = False) -> None:
-        estimator = model.build(model_logs_dir, list(self._extension_map))
-        model.save(estimator, self._saved_model_dir, ckpt_path, tflite)
+        with TemporaryDirectory() as model_logs_dir:
+            estimator = model.build(model_logs_dir,
+                                    list(self._extension_map))
+            model.save(estimator, self._saved_model_dir, ckpt_path, tflite)
 
 
 class GuesslangError(Exception):
