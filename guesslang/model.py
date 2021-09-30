@@ -8,7 +8,7 @@ from operator import itemgetter
 from pathlib import Path
 import shutil
 from tempfile import TemporaryDirectory
-from typing import List, Tuple, Dict, Any, Callable
+from typing import List, Tuple, Dict, Any, Callable, Optional
 
 import tensorflow as tf
 from tensorflow.estimator import ModeKeys, Estimator
@@ -101,22 +101,31 @@ def train(estimator: Estimator, data_root_dir: str, max_steps: int) -> Any:
     return training_metrics
 
 
-def save(estimator: Estimator, saved_model_dir: str, ckpt_path:str=None, is_tflite:bool=False) -> None:
+def save(estimator: Estimator,
+         saved_model_dir: str,
+         ckpt_path: Optional[str] = None,
+         is_tflite: bool = False) -> None:
     """Save a Tensorflow estimator"""
     with TemporaryDirectory() as temporary_model_base_dir:
         export_dir = estimator.export_saved_model(
-            temporary_model_base_dir, functools.partial(_serving_input_receiver_fn, is_tflite=is_tflite),
+            temporary_model_base_dir,
+            functools.partial(_serving_input_receiver_fn,
+                              is_tflite=is_tflite),
             checkpoint_path=ckpt_path
         )
         Path(saved_model_dir).mkdir(exist_ok=True)
         export_path = Path(export_dir.decode()).absolute()
         if is_tflite:
-            converter = tf.lite.TFLiteConverter.from_saved_model(export_dir, signature_keys=['predict'])
-            converter.optimizations=[tf.lite.Optimize.DEFAULT]
-            converter.inference_type=tf.float32
-            converter.target_spec.supported_ops=[tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]
+            converter = tf.lite.TFLiteConverter.from_saved_model(
+                export_dir, signature_keys=['predict'])
+            converter.optimizations = [tf.lite.Optimize.DEFAULT]
+            converter.inference_type = tf.float32
+            ops_sets = [tf.lite.OpsSet.TFLITE_BUILTINS,
+                        tf.lite.OpsSet.SELECT_TF_OPS]
+            converter.target_spec.supported_ops = ops_sets
             model = converter.convert()
-            tf.io.write_file(os.path.join(saved_model_dir, 'guesslang.tflite'), model)
+            tflite_path = os.path.join(saved_model_dir, 'guesslang.tflite')
+            tf.io.write_file(tflite_path, model)
         for path in export_path.glob('*'):
             shutil.move(str(path), saved_model_dir)
 
@@ -188,12 +197,14 @@ def _build_input_fn(
     return input_function
 
 
-def _serving_input_receiver_fn(is_tflite=False) -> tf.estimator.export.ServingInputReceiver:
+def _serving_input_receiver_fn(
+        is_tflite: bool = False) -> tf.estimator.export.ServingInputReceiver:
     """Function to serve model for predictions."""
     if is_tflite:
-        content = tf.compat.v1.placeholder(tf.string, [HyperParameter.NB_TOKENS+1])
+        content = tf.compat.v1.placeholder(tf.string,
+                                           [HyperParameter.NB_TOKENS+1])
         length = tf.compat.v1.placeholder(tf.int32, [])
-        receiver_tensors = {'content': content, 'length':length}
+        receiver_tensors = {'content': content, 'length': length}
         features = {'content': _preprocess_text_tflite(content, length)}
     else:
         content = tf.compat.v1.placeholder(tf.string, [None])
@@ -225,12 +236,16 @@ def _preprocess(
 def _preprocess_text(data: tf.Tensor) -> tf.Tensor:
     """Feature engineering"""
     data = tf.strings.bytes_split(data)
-    data = text.ngrams(data, HyperParameter.N_GRAM, reduction_type=text.Reduction.STRING_JOIN)
+    data = text.ngrams(
+        data, HyperParameter.N_GRAM, reduction_type=text.Reduction.STRING_JOIN)
     return data.to_tensor(shape=(data.shape[0], HyperParameter.NB_TOKENS))
 
 
 def _preprocess_text_tflite(data: tf.Tensor, length: tf.Tensor) -> tf.Tensor:
-    processed_data, unprocessed_data = tf.split(data, [length, HyperParameter.NB_TOKENS-length+1], num=2, axis=0)
-    processed_data = text.ngrams(processed_data, HyperParameter.N_GRAM, reduction_type=text.Reduction.STRING_JOIN)
-    return tf.expand_dims(tf.concat([processed_data, unprocessed_data], axis=0), axis=0)
-     
+    processed_data, unprocessed_data = tf.split(
+        data, [length, HyperParameter.NB_TOKENS-length+1], num=2, axis=0)
+    processed_data = text.ngrams(
+        processed_data, HyperParameter.N_GRAM,
+        reduction_type=text.Reduction.STRING_JOIN)
+    return tf.expand_dims(
+        tf.concat([processed_data, unprocessed_data], axis=0), axis=0)
