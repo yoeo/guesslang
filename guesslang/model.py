@@ -183,7 +183,7 @@ def _build_input_fn(
         if mode == ModeKeys.TRAIN:
             dataset = dataset.shuffle(Training.SHUFFLE_BUFFER).repeat()
 
-        return dataset.map(_preprocess).batch(HyperParameter.BATCH_SIZE)
+        return dataset.batch(HyperParameter.BATCH_SIZE).map(_preprocess)
 
     return input_function
 
