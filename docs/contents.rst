@@ -318,7 +318,7 @@ References
 ==========
 
 * `Guesslang source code is on Github <https://github.com/yoeo/guesslang>`_.
-* Guesslang is developped with `Tensorflow <https://www.tensorflow.org/>`_
+* Guesslang is developed with `Tensorflow <https://www.tensorflow.org/>`_
   machine learning framework.
 * Use `GuesslangTools <https://github.com/yoeo/guesslangtools>`_
   to build your own training dataset.
