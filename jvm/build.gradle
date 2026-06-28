@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.guesslang'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'ai.djl:api:0.31.1'
+    runtimeOnly 'ai.djl.onnxruntime:onnxruntime-engine:0.31.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.16'
+}
+
+application {
+    mainClass = 'com.guesslang.Main'
+}
+
+// Thin jar: application plugin produces a distribution with lib/ and a script; jar stays thin
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.guesslang.Main'
+        )
+    }
+}
+
+tasks.named('run') {
+    standardInput = System.in
+}

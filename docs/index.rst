@@ -3,5 +3,6 @@
 
   contents
   guesslang
+  jvm
 
 .. include:: contents.rst

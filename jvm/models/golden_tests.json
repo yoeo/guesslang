@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "python-quicksort",
+      "text": "def quicksort(xs):\n    if len(xs) <= 1:\n        return xs\n    pivot = xs[0]\n    left = [x for x in xs[1:] if x < pivot]\n    right = [x for x in xs[1:] if x >= pivot]\n    return quicksort(left) + [pivot] + quicksort(right)\n",
+      "expected_top1": "py"
+    },
+    {
+      "name": "go-main",
+      "text": "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"hello\")\n}\n",
+      "expected_top1": "go"
+    },
+    {
+      "name": "java-main",
+      "text": "public class Hello {\n    public static void main(String[] args) {\n        System.out.println(\"hello\");\n    }\n}\n",
+      "expected_top1": "java"
+    },
+    {
+      "name": "sql-query",
+      "text": "SELECT id, name FROM users WHERE is_active = 1 ORDER BY created_at DESC;\n",
+      "expected_top1": "sql"
+    }
+  ]
+}

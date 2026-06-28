@@ -118,6 +118,19 @@ then run this command:
 
   pip install .
 
+Alternative JVM runtime
+-----------------------
+
+The default Guesslang package is the Python/TensorFlow implementation. An
+alternative JVM runtime is available in the repository's ``jvm`` directory for
+Java/Kotlin applications, IDE plugins, and deployments where installing the
+Python TensorFlow stack is difficult.
+
+The JVM runtime uses an ONNX export of the Guesslang model through DJL and ONNX
+Runtime. It is maintained as a separate Gradle project so it does not change the
+Python package, PyPI artifacts, or existing command line behavior. See
+:doc:`jvm` for build, installation, and parity testing instructions.
+
 Usage
 =====
 

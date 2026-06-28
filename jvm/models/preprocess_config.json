@@ -1,0 +1,17 @@
+{
+  "input_dtype": "string",
+  "standardize": "lower_and_strip_punctuation",
+  "split": "whitespace",
+  "ngrams": 2,
+  "max_tokens": 10000,
+  "output_mode": "tf_idf",
+  "output_sequence_length_for_int": 512,
+  "int_vocabulary_size": 10000,
+  "tfidf_vocabulary_size": 10000,
+  "special_tokens": {
+    "padding_or_mask_int": "",
+    "oov_int": "[UNK]",
+    "padding_or_mask_tfidf": "[UNK]",
+    "oov_tfidf": "the"
+  }
+}

@@ -93,6 +93,24 @@ To run [Tensorflow](https://github.com/tensorflow/tensorflow)
 on Microsoft Windows you need to install Visual C++ runtime libraries,
 available on [Microsoft website](https://www.microsoft.com/en-us/download/details.aspx?id=53587)
 
+## Alternative JVM Implementation
+
+Guesslang also includes an experimental JVM runtime in [`jvm`](jvm/) for
+Java/Kotlin applications, IDE plugins, and environments where installing the
+Python TensorFlow stack is difficult. It runs an ONNX export of the Guesslang
+model with [DJL](https://djl.ai/) and ONNX Runtime, while keeping the Python
+package as the default and reference implementation.
+
+Use the Python package when you want the stable `guesslang` CLI or Python API,
+training support, or the current TensorFlow model pipeline. Use the JVM runtime
+when you need language detection inside a JVM process, want a Gradle-built CLI,
+or need to avoid a Python/TensorFlow runtime dependency in production.
+
+The JVM runtime lives in a separate Gradle project so it does not change the
+Python package, PyPI artifacts, or existing command line behavior. See
+[`jvm/README.md`](jvm/README.md) for build instructions, model artifact
+requirements, and Python/JVM parity testing.
+
 ## Guesslang command line
 
 * Show all available options
