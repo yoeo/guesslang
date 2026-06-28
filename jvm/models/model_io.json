@@ -1,0 +1,31 @@
+{
+  "output_is_logits": true,
+  "inputs": [
+    {
+      "name": "deep_input",
+      "dtype": "int32",
+      "shape": [
+        "batch",
+        512
+      ]
+    },
+    {
+      "name": "wide_input",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        10000
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "name": "logits",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        54
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# Gradle wrapper script for Unix (Linux/macOS)
+#
+set -e
+DIRNAME=$(dirname "$0")
+APP_HOME=$(cd "$DIRNAME" && pwd)
+exec java -Dfile.encoding=UTF-8 -Xmx64m -Xms64m \
+  -classpath "$APP_HOME/gradle/wrapper/gradle-wrapper.jar" \
+  org.gradle.wrapper.GradleWrapperMain "$@"

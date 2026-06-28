@@ -93,3 +93,8 @@ ENV/
 README.md.html
 .mypy_cache/
 .pytest_cache
+
+# JVM / Gradle runtime
+.gradle/
+jvm/.gradle/
+jvm/build/
